@@ -4,7 +4,7 @@
 set -e
 
 docker ps --filter name=$1
-target_id=$(docker ps --filter name=ctop -ql)
+target_id=$(docker ps --filter name=$1 -ql)
 echo Target container id: $target_id
 
 docker cp /busybox $target_id:/busybox
