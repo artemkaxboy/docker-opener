@@ -1,0 +1,56 @@
+name: build
+
+on:
+  push:
+    tags:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: set up docker buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: build and push latest to docker.com and ghcr.io
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
+        env:
+          DOCKER_REGISTRY_USERNAME: ${{ github.actor }}
+          DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+          GH_REGISTRY_USERNAME: ${{ github.actor }}
+          GH_REGISTRY_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
+        run: |
+          version=latest
+          revision=${GITHUB_SHA:0:8}
+          ref_name=$(echo ${GITHUB_REF} | cut -f3 -d/)
+          echo ${GH_REGISTRY_TOKEN} | docker login ghcr.io -u ${GH_REGISTRY_USERNAME} --password-stdin
+          echo ${DOCKER_REGISTRY_TOKEN} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
+          docker buildx build --push \
+              --build-arg VERSION=${version} --build-arg REVISION=${revision} --build-arg REF_NAME=${ref_name} \
+              --platform linux/amd64,linux/arm/v7,linux/arm64 \
+              -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:${version} -t ${DOCKER_REGISTRY_USERNAME}/opener:${version} dockerbuild
+
+      - name: build and push tag and latest to docker.com and ghcr.io
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        env:
+          DOCKER_REGISTRY_USERNAME: ${{ github.actor }}
+          DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+          GH_REGISTRY_USERNAME: ${{ github.actor }}
+          GH_REGISTRY_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
+        run: |
+          version=$(echo ${GITHUB_REF} | cut -f3 -d/)
+          revision=${GITHUB_SHA:0:8}
+          ref_name=$(echo ${GITHUB_REF} | cut -f3 -d/)
+          echo ${GH_REGISTRY_TOKEN} | docker login ghcr.io -u ${GH_REGISTRY_USERNAME} --password-stdin
+          echo ${DOCKER_REGISTRY_TOKEN} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
+          docker buildx build --push \
+              --build-arg VERSION=${version} --build-arg REVISION=${revision} --build-arg REF_NAME=${ref_name} \
+              --platform linux/amd64,linux/arm/v7,linux/arm64 \
+              -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:${version} -t ${DOCKER_REGISTRY_USERNAME}/opener:${version} dockerbuild
+              -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:latest -t ${DOCKER_REGISTRY_USERNAME}/opener:latest dockerbuild
