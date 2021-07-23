@@ -47,32 +47,59 @@ connect() {
     [ "$#" -eq 0 ] && die "Target required"
     [ "$#" -gt 1 ] && die "Only one target expected"
     find_container "$1"
-    echo Connecting to "$target_id"
 
-    docker cp /busybox "$target_id":/busybox
+    docker exec --user 0 "$target_id" bash > /dev/null && interpreter="bash"
+    [ -z "$interpreter" ] && docker exec --user 0 "$target_id" sh > /dev/null && interpreter="sh"
+
+    case $interpreter in
+        bash|sh)
+            connect_only $interpreter ;;
+        *) install_busybox_and_connect ;;
+    esac
+}
+
+connect_only() {
+    echo "Native shell found: $1"
+    echo "Connecting..."
+    docker exec --user 0 -it "$target_id" "$1"
+}
+
+install_busybox_and_connect() {
+    install_busybox
 
     # runs if any interrupt, terminate, exit signal come. Doesn't work with docker kill
-    trap 'docker exec --user root -it "$target_id" /busybin/rm -rf /busybox /busybin' INT TERM EXIT
+    trap remove_busybox INT TERM EXIT
 
-    docker exec --user root -it "$target_id" /busybox sh -c '
+    echo "Connecting..."
+    docker exec --user 0 -it "$target_id" /busybox sh -c '
         export PATH="/busybin:$PATH"
         /busybox mkdir /busybin -p
         /busybox --install /busybin
         sh'
 }
 
+install_busybox() {
+    echo "Installing busybox..."
+    docker cp /busybox "$target_id":/busybox
+}
+
+remove_busybox() {
+    echo "Removing busybox..."
+    docker exec --user 0 -it "$target_id" /busybin/rm -rf /busybox /busybin
+}
+
 fetch_logs() {
     [ "$#" -eq 0 ] && die "Target required"
     [ "$#" -gt 1 ] && die "Only one target expected"
     find_container "$1"
-    echo Fetching logs for "$target_id"
+    echo "Fetching logs for $target_id"
 
     docker logs -f "$target_id"
 }
 
 ##################### START
 # stop on any error
-set -e
+# set -e
 
 case $1 in
     logs)
