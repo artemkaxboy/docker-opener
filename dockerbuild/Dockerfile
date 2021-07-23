@@ -8,10 +8,11 @@ FROM docker:19.03
 ARG VERSION=SNAPSHOT
 ARG REVISION
 ARG REF_NAME
+ARG CREATED
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 
-# LABEL org.opencontainers.image.created=
+LABEL org.opencontainers.image.created=${CREATED}
 LABEL org.opencontainers.image.authors="artemkaxboy@gmail.com"
 LABEL org.opencontainers.image.url="https://github.com/artemkaxboy/docker-opener"
 LABEL org.opencontainers.image.documentation="https://github.com/artemkaxboy/docker-opener"
