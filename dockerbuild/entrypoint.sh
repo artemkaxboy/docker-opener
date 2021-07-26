@@ -98,11 +98,18 @@ fetch_logs() {
     docker logs "$target_id" "$@"
 }
 
+update() {
+    image=$(docker ps --format "{{.Image}}" | grep artemkaxboy/opener)
+    docker pull "$image"
+}
+
 ##################### START
 # stop on any error
 # set -e
 
 case $1 in
+    update)
+        update ;;
     logs)
         shift
         fetch_logs "$@" ;;
