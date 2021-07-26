@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# bashism
+# https://tldp.org/LDP/abs/html/parameter-substitution.html
 
 ##################### FUNCTIONS
 
@@ -41,6 +44,22 @@ find_container() {
     fi
 
     docker ps --filter id="$target_id"
+}
+
+find_compose_project() {
+    ###### find by exact name
+    target_compose_project=$(docker ps --filter label=com.docker.compose.project --format '{{.Label "com.docker.compose.project"}}' | grep ^"$1"$ -m1)
+    [ -n "$target_compose_project" ] && echo "Found compose with name: $1"
+
+    ###### find by name
+    if [ -z "$target_compose_project" ]; then
+    target_compose_project=$(docker ps --filter label=com.docker.compose.project --format '{{.Label "com.docker.compose.project"}}' | grep "$1" -m1)
+        [ -n "$target_compose_project" ] && echo "Found compose with name containing \`$1\`: $target_compose_project"
+    fi
+
+    if [ -z "$target_compose_project" ]; then
+        die "Compose not found: $1"
+    fi
 }
 
 connect() {
@@ -98,6 +117,25 @@ fetch_logs() {
     docker logs "$target_id" "$@"
 }
 
+fetch_compose_logs() {
+    [ "$#" -eq 0 ] && die "Target required"
+
+    find_compose_project "$1"
+    echo "Fetching logs for compose $target_id"
+    shift
+
+    # find all services of the target_compose_project
+    compose_services=$(docker ps --all --filter label=com.docker.compose.project="$target_compose_project" --format '{{.Label "com.docker.compose.service"}}:')
+
+    # make fake compose file with all needed services
+    # https://stackoverflow.com/a/19347380/1452052
+    # replace any of specials ${var//[$'\t\r\n']}
+    printf "version: '3.8'\\nservices:\\n  %b\\n    build: ." "${compose_services//[$'\n']/\\n    build: .\\n  }" > /tmp/compose.yml
+
+    # read logs
+    docker-compose --project-name "$target_compose_project" --file /tmp/compose.yml logs "$@"
+}
+
 update() {
     image=$(docker ps --format "{{.Image}}" | grep artemkaxboy/opener)
     docker pull "$image"
@@ -113,8 +151,12 @@ case $1 in
     logs)
         shift
         fetch_logs "$@" ;;
+    cl|compose-logs)
+        shift
+        fetch_compose_logs "$@" ;;
     --)
         shift
         connect "$@" ;;
-    *) connect "$@" ;;
+    *)
+        connect "$@" ;;
 esac

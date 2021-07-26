@@ -1,9 +1,7 @@
-# Must have linux/arm/v7 manifest
 FROM busybox:1.33.1 as busybox
 # -----------------------------
 
-# Must have linux/arm/v7 manifest
-FROM docker:19.03
+FROM docker/compose:1.29.2
 
 ARG VERSION=SNAPSHOT
 ARG REVISION

@@ -36,7 +36,6 @@ jobs:
           echo ${DOCKER_REGISTRY_TOKEN} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
           docker buildx build --push \
               --build-arg VERSION=${version} --build-arg REVISION=${revision} --build-arg REF_NAME=${ref_name} --build-arg CREATED="${now}" \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 \
               -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:${version} -t ${DOCKER_REGISTRY_USERNAME}/opener:${version} dockerbuild
 
       - name: build and push tag and latest to docker.com and ghcr.io
@@ -56,6 +55,5 @@ jobs:
           echo ${DOCKER_REGISTRY_TOKEN} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin
           docker buildx build --push \
               --build-arg VERSION=${version} --build-arg REVISION=${revision} --build-arg REF_NAME=${ref_name} --build-arg CREATED="${now}" \
-              --platform linux/amd64,linux/arm/v7,linux/arm64 \
               -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:${version} -t ${DOCKER_REGISTRY_USERNAME}/opener:${version} \
               -t ghcr.io/${GH_REGISTRY_USERNAME}/opener:latest -t ${DOCKER_REGISTRY_USERNAME}/opener:latest dockerbuild
