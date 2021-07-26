@@ -14,25 +14,25 @@ find_container() {
 
     ###### find by name
     if [ -z "$target_id" ]; then
-        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Names}}" | grep "\\s.*$1" | head -n1 | awk '{print $1}')
+        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Names}}" | grep "\\s.*$1" -m1 | awk '{print $1}')
         [ -n "$target_id" ] && echo "Found container with name containing: $1"
     fi
 
     ###### find by image
     if [ -z "$target_id" ]; then
-        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Image}}" | grep "\\s.*$1" | head -n1 | awk '{print $1}')
+        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Image}}" | grep "\\s.*$1" -m1 | awk '{print $1}')
         [ -n "$target_id" ] && echo "Found container with image containing: $1"
     fi
 
     ###### find by id
     if [ -z "$target_id" ]; then
-        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.ID}}" | grep "\\s.*$1" | head -n1 | awk '{print $1}')
+        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.ID}}" | grep "\\s.*$1" -m1 | awk '{print $1}')
         [ -n "$target_id" ] && echo "Found container with ID containing: $1"
     fi
 
     ###### find by port
     if [ -z "$target_id" ]; then
-        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Ports}}" | grep "\\s.*$1" | head -n1 | awk '{print $1}')
+        target_id=$(docker ps --no-trunc --format "{{.ID}} {{.Ports}}" | grep "\\s.*$1" -m1 | awk '{print $1}')
         [ -n "$target_id" ] && echo "Found container with port containing: $1"
     fi
 
@@ -106,5 +106,8 @@ case $1 in
     logs)
         shift
         fetch_logs "$@" ;;
+    --)
+        shift
+        connect "$@" ;;
     *) connect "$@" ;;
 esac
