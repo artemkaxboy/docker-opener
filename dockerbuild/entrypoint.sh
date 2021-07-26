@@ -90,11 +90,12 @@ remove_busybox() {
 
 fetch_logs() {
     [ "$#" -eq 0 ] && die "Target required"
-    [ "$#" -gt 1 ] && die "Only one target expected"
+
     find_container "$1"
     echo "Fetching logs for $target_id"
+    shift
 
-    docker logs -f "$target_id"
+    docker logs "$target_id" "$@"
 }
 
 ##################### START
