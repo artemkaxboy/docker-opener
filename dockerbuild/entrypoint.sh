@@ -10,6 +10,26 @@ die() {
     exit 1
 }
 
+take_head() {
+    take_head_args=$*
+    retval=${take_head_args%%' '*}
+}
+
+cut_tail() {
+    cut_tail_args=$*
+    retval=${cut_tail_args%' '*}
+}
+
+take_tail() {
+    take_tail_args=$*
+    retval=${take_tail_args##*' '}
+}
+
+cut_head() {
+    cut_head_args=$*
+    retval=${cut_head_args#*' '}
+}
+
 find_container() {
     ###### find by exact name
     target_id=$(docker ps --filter name=^"$1"$ -q)
@@ -62,6 +82,24 @@ find_compose_project() {
     fi
 }
 
+# finds target of search, it may be `cname -f -n 200` or `-f -n 200 cname`
+divide_target_and_arguments() {
+
+    args="${*}"
+
+    if [ "${args:0:1}" == "-" ] ; then
+        take_tail "$args"
+        target=$retval
+        cut_tail "$args"
+        arguments=$retval
+    else
+        take_head "$args"
+        target=$retval
+        cut_head "$args"
+        arguments=$retval
+    fi
+}
+
 connect() {
     [ "$#" -eq 0 ] && die "Target required"
     [ "$#" -gt 1 ] && die "Only one target expected"
@@ -110,11 +148,11 @@ remove_busybox() {
 fetch_logs() {
     [ "$#" -eq 0 ] && die "Target required"
 
-    find_container "$1"
+    divide_target_and_arguments "$@"
+    find_container "$target"
     echo "Fetching logs for $target_id"
-    shift
 
-    docker logs "$target_id" "$@"
+    docker logs "$target_id" "$arguments"
 }
 
 fetch_compose_logs() {
