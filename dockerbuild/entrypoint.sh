@@ -14,6 +14,18 @@ die() {
     exit 1
 }
 
+print_help() {
+    echo "Usage: COMMAND [OPTIONS]"
+    echo ""
+    echo "Commands:"
+    echo " --                 Attach terminal to running container"
+    echo " l,  logs           Fetch container logs"
+    echo " cl, compose-logs   Fetch compose logs"
+    echo " u,  update         Update (pull) current image"
+    echo
+    echo "To get more help with opener, check out our docs at https://github.com/artemkaxboy/docker-opener"
+}
+
 take_head() {
     take_head_args=$*
     retval=${take_head_args%%' '*}
@@ -188,6 +200,8 @@ update() {
 # set -e
 
 case $1 in
+    h|help|-h|--help)
+        print_help ;;
     u|update)
         update ;;
     l|logs)
