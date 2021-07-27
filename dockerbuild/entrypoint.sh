@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/bin/sh
+
+# shebang
+# /bin/bash breaks container starting, because container does not have /bin/bash
+# /bin/sh breaks running script on host, because some bashism is not supported by /bin/sh
 
 # bashism
 # https://tldp.org/LDP/abs/html/parameter-substitution.html
