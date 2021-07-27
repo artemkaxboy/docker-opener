@@ -188,9 +188,9 @@ update() {
 # set -e
 
 case $1 in
-    update)
+    u|update)
         update ;;
-    logs)
+    l|logs)
         shift
         fetch_logs "$@" ;;
     cl|compose-logs)
