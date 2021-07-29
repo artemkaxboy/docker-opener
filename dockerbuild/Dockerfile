@@ -8,8 +8,10 @@ ARG REVISION
 ARG REF_NAME
 ARG CREATED
 
-# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+RUN apk add --no-cache python3 py3-pip
+RUN pip3 install docker
 
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.created=${CREATED}
 LABEL org.opencontainers.image.authors="artemkaxboy@gmail.com"
 LABEL org.opencontainers.image.url="https://github.com/artemkaxboy/docker-opener"
@@ -24,6 +26,7 @@ LABEL org.opencontainers.image.title="Any docker container opener"
 LABEL org.opencontainers.image.description="Shell-in to any docker container easily"
 
 COPY --from=busybox /bin/busybox /busybox
+COPY ./python /python
 COPY ./entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

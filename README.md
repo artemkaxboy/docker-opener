@@ -16,14 +16,14 @@ Connect to any running container by typing any known attribute: name, image, exp
 
 Run any container:
 
-```bash
+```shell
 $ docker run -d --name docker-web portainer/portainer-ce
 62f87fb2...
 ```
 
 Connect by name:
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener web
 Found container with name containing: web
 CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS                NAMES
@@ -38,7 +38,7 @@ Removing busybox...
 
 Connect by image name:
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener port
 Found container with name containing: port
 ...
@@ -46,7 +46,7 @@ Found container with name containing: port
 
 Connect by port number:
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener 9000
 Found container with port containing: 9000
 ...
@@ -54,7 +54,7 @@ Found container with port containing: 9000
 
 Connect by container ID:
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener 62f8
 Found container with ID containing: 62f8
 ...
@@ -66,7 +66,7 @@ Fetch logs with `logs|l` command by any known container's property: name, image,
 
 #### Fetching logs examples
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener logs web -f
 Found container with name containing: web
 CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS                NAMES
@@ -76,13 +76,20 @@ Fetching logs for 62f87fb2ce5f978842b65beebffcc87ff09f8a9e3f2f4540da267bd37da486
 ...
 ```
 
-### Fetching compose logs
+### Docker compose commands
 
-Fetch compose logs by compose's project name. Use any of familiar `docker-compose logs` command options.
+Some docker-compose commands are supported by part of name. Available commands:
 
-### Fetching compose logs examples
+* `cd|cdown|compose-down` - Stop and remove compose resources
+* `cl|clogs|compose-logs` - View output from compose containers
+* `ck|ckill|compose-kill` - Kill compose containers
+* `cstart|compose-start` - Start compose services
+* `cstop|compose-stop` - Stop compose services
+* `ct|ctop|compose-top` - Display the running compose processes
 
-```bash
+#### Compose commands examples
+
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener compose-logs infra -f registry
 Found compose with name containing `infra`: infrastructure
 Fetching logs for compose
@@ -90,11 +97,22 @@ Attaching to infrastructure_registry_1
 registry_1   | ...
 ```
 
+```shell
+$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener compose-stop infra
+Found compose with name containing `infra`: infrastructure
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS                                                                                  NAMES
+de42f6ae4b6c        portainer/portainer-ce   "/portainer"             5 hours ago         Up 5 hours          0.0.0.0:8000->8000/tcp, :::8000->8000/tcp, 0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   infrastructure_portainer_1
+8fd435e39c11        registry:2               "/entrypoint.sh /etc…"   2 weeks ago         Up 45 hours         0.0.0.0:5000->5000/tcp, :::5000->5000/tcp                                              infrastructure_registry_1
+
+Stopping infrastructure_portainer_1 ... done
+Stopping infrastructure_registry_1  ... done
+```
+
 ### Update
 
 The easiest way to use latest version of the utilty is to use latest tag `artemkaxboy/opener:latest` or use it without tag `artemkaxboy/opener`. To update latest version use `update|u` command:
 
-```bash
+```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener update
 Using default tag: latest
 latest: Pulling from artemkaxboy/opener
@@ -105,14 +123,29 @@ latest: Pulling from artemkaxboy/opener
 
 To make the command shorter use linux alias. For current terminal session:
 
-```bash
+```shell
 alias opener='docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'
 ```
 
-Or permanently:
+Or permanently (logout and login or new terminal session required):
 
-```bash
+```shell
 echo "alias opener='docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
+```
+
+### Alias usage
+
+After adding alias you can use short form, e.g.:
+
+```shell
+# attach to container infrastructure_registry_1
+$ opener reg
+
+# view last 200 lines and follow logs of infrastructure compose 
+$ opener clogs infra -f --tail 200
+
+# send SIGTERM signal to registry service of infrastructure compose
+$ opener ckill infra -s SIGTERM registry
 ```
 
 ## License
