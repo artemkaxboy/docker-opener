@@ -2,6 +2,7 @@ import os
 import re
 
 from docker import client, DockerClient
+from docker.errors import DockerException
 from docker.models.containers import Container, ExecResult
 
 from tools import system_tools
@@ -91,6 +92,7 @@ def make_fake_compose(target_name: str, search_all=False):
     """
     Makes fake compose to fetch logs.
     :param target_name: name of compose.
+    :param search_all: search among all containers. Only running containers by default.
     :return: None
     """
     docker = client.from_env()
@@ -201,6 +203,7 @@ def docker_ps(container_id: str = None, compose_name: str = None, search_all=Fal
     Prints docker ps command output.
     :param container_id: prints only given container if given
     :param compose_name: prints only given compose containers if given
+    :param search_all: ps all containers
     :return: None
     """
     all_command = ["--all"] if search_all else []
@@ -211,3 +214,11 @@ def docker_ps(container_id: str = None, compose_name: str = None, search_all=Fal
     else:
         system_tools.os_run(
             ["docker", "ps", "--filter", "label=" + compose_project_label + "=" + compose_name] + all_command)
+
+
+def is_docker_available():
+    try:
+        client.from_env()
+        return True
+    except DockerException:
+        return False
