@@ -2,7 +2,7 @@
 import sys
 
 from commands import attach, compose, help, logs, update
-from tools import system_tools
+from tools import system_tools, docker_tools
 
 update_commands = ["u", "update"]
 help_commands = ["h", "-h", "help", "--help"]
@@ -16,6 +16,9 @@ compose_top_commands = ["ct", "ctop", "compose-top"]
 attach_commands = ["--"]
 
 try:
+    if not docker_tools.is_docker_available():
+        raise OSError("Docker is not available")
+
     args = sys.argv[1:]
     if len(args) == 0:
         system_tools.die("Target required")
@@ -45,7 +48,7 @@ try:
     else:
         attach.run(args)
 
-except ValueError as e:
+except (ValueError, OSError) as e:
     system_tools.die("Error: " + str(e))
 except KeyboardInterrupt:
     pass
