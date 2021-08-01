@@ -28,7 +28,7 @@ def logs(args):
     if len(args) == 0:
         system_tools.die("Compose logs target required")
 
-    prepare_command(args, compose_logs_command)
+    prepare_command(args, compose_logs_command, search_all=True)
 
 
 def kill(args):
