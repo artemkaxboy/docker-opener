@@ -27,9 +27,9 @@ fake_compose_path = "/tmp/compose.yml"
 def get_container_id(target):
     """
     Returns container's ID by name, image, id, port.
-    :param target: known property of wanted container.
-    :return: Found container's ID.
-    :raises: ValueError if container not found.
+    :param target: known attribute of wanted container
+    :return: Found container's ID
+    :raises ValueError if container not found
     """
     docker = client.from_env()
     containers = docker.containers.list()
@@ -67,9 +67,9 @@ def get_compose_name(target: str, search_all=False):
     """
     Returns compose's name by it's part
     :param target: known part of name.
-    :param search_all: search all containers.
-    :return: Found compose's name.
-    :raises: ValueError if compose not found.
+    :param search_all: include stopped containers
+    :return: Found compose's name
+    :raises ValueError if compose not found
     """
     docker = client.from_env()
     containers = docker.containers.list(filters={"label": compose_project_label}, all=search_all)
@@ -92,7 +92,7 @@ def make_fake_compose(target_name: str, search_all=False):
     """
     Makes fake compose to fetch logs.
     :param target_name: name of compose.
-    :param search_all: search among all containers. Only running containers by default.
+    :param search_all: include stopped containers
     :return: None
     """
     docker = client.from_env()
@@ -109,7 +109,7 @@ def get_ports(container: Container):
     """
     Returns all exposed and mapped port of the given container as a set.
     :param container: to find port of.
-    :return: set of ports.
+    :return: set of ports
     """
 
     ports = set()
@@ -131,7 +131,7 @@ def port_mapping_to_set(raw_port):
     Returns all mapped ports as a set.
     :param raw_port: port in any allowed format
         https://docker-py.readthedocs.io/en/stable/containers.html#container-objects.
-    :return: set of ports.
+    :return: set of ports
     """
 
     if raw_port is None:
@@ -156,7 +156,7 @@ def port_to_string(port):
     """
     Returns clear number string containing port number.
     :param port: port in integer (1234) or string ("1234/tcp") representation.
-    :return: port number as number string ("1234").
+    :return: port number as number string ("1234")
     """
     port_type = type(port)
     if port_type is int:
@@ -169,17 +169,19 @@ def get_interpreter(container_id: str):
     """
     Finds available system command interpreter in container or install busybox. Order: bash, sh, busybox.
     :param container_id: target container id to get interpreter.
-    :return: interpreter command.
+    :return: interpreter command
     """
     docker: DockerClient = client.from_env()
     container: Container = docker.containers.get(container_id)
 
     result: ExecResult = container.exec_run("bash")
     if result.exit_code == 0:
+        print("Found native shell: bash")
         interpreter = "bash"
     else:
         result: ExecResult = container.exec_run("sh")
         if result.exit_code == 0:
+            print("Found native shell: sh")
             interpreter = "sh"
         else:
             copy_busybox(container.id)
@@ -203,7 +205,7 @@ def docker_ps(container_id: str = None, compose_name: str = None, search_all=Fal
     Prints docker ps command output.
     :param container_id: prints only given container if given
     :param compose_name: prints only given compose containers if given
-    :param search_all: ps all containers
+    :param search_all: include stopped containers
     :return: None
     """
     all_command = ["--all"] if search_all else []

@@ -13,7 +13,7 @@ def os_run(*command, stdout=True):
     Run given command.
     :param command: command to run
     :param stdout: prints output to stdout if true, otherwise - returns output
-    :return: output or None
+    :return: Output or None
     """
     to_run = command[0]
 
@@ -32,11 +32,11 @@ def divide_target_and_options(args):
     elif len(args) == 1:
         if args[0][0] == '-':
             raise ValueError("Logs target required!")
-        return args[0], []
+        return args[0], ""
     else:
         if args[0][0] == '-':
-            return args[-1], args[0:-1]
-        return args[0], args[1:]
+            return args[-1], ' '.join(args[0:-1])
+        return args[0], ' '.join(args[1:])
 
 
 def prepare_command(command):

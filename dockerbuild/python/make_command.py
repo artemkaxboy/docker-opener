@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 
-from commands import attach, compose, logs, common
+from commands import compose, common, container
 from tools import system_tools, docker_tools
 
 # ------------------------------------ common commands
@@ -38,7 +38,7 @@ try:
     elif command in version_commands:
         common.version()
     elif command in logs_commands:
-        logs.run(args[1:])
+        container.logs(args[1:])
     elif command in compose_down_commands:
         compose.down(args[1:])
     elif command in compose_kill_commands:
@@ -53,9 +53,9 @@ try:
         compose.top(args[1:])
 
     elif command in attach_commands:
-        attach.run(args[1:])
+        container.attach(args[1:])
     else:
-        attach.run(args)
+        container.attach(args)
 
 except (ValueError, OSError) as e:
     system_tools.die("Error: " + str(e))
