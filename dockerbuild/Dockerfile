@@ -4,7 +4,7 @@ FROM busybox:1.33.1 as busybox
 FROM docker/compose:1.29.2
 
 ARG VERSION=SNAPSHOT
-ARG REVISION
+ARG REVISION=LOCAL
 ARG REF_NAME
 ARG CREATED
 
@@ -24,6 +24,9 @@ LABEL org.opencontainers.image.licenses="Apache 2.0"
 LABEL org.opencontainers.image.ref.name=${REF_NAME}
 LABEL org.opencontainers.image.title="Any docker container opener"
 LABEL org.opencontainers.image.description="Shell-in to any docker container easily"
+
+ENV VERSION=${VERSION}
+ENV REVISION=${REVISION}
 
 COPY --from=busybox /bin/busybox /busybox
 COPY ./python /python
