@@ -1,3 +1,4 @@
 *.tmp
 /dockerbuild/command.sh
 /.idea/
+**/__pycache__/

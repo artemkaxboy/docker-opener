@@ -42,7 +42,7 @@ def down(args):
     if len(args) == 0:
         system_tools.die("Compose down target required")
 
-    prepare_command(args, compose_down_command)
+    prepare_command(args, compose_down_command, search_all=True)
 
 
 def start(args):
