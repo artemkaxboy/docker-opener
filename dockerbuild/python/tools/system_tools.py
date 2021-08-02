@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -39,6 +40,14 @@ def divide_target_and_options(args):
 
 
 def prepare_command(command):
+
+    debug(command)
+
     file_name = "command.sh"
     with open(file_name, "w") as file:
         file.write(command)
+
+
+def debug(text):
+    if os.environ.get("DEBUG") == "True":
+        print("[DEBUG] - %s" % text)

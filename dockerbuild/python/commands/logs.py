@@ -10,4 +10,4 @@ def run(args):
     target_id = docker_tools.get_container_id(target)
     docker_tools.docker_ps(container_id=target_id)
 
-    system_tools.os_run(["docker", "logs", target_id] + options)
+    system_tools.prepare_command("docker logs %s %s" % (target_id, ' '.join(options)))
