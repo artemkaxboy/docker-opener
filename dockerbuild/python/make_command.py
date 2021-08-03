@@ -13,6 +13,7 @@ version_commands = ["v", "-v", "version", "--version"]
 compose_down_commands = ["cd", "cdown", "compose-down"]
 compose_kill_commands = ["ck", "ckill", "compose-kill"]
 compose_logs_commands = ["cl", "clogs", "compose-logs"]
+compose_ps_commands = ["cps", "compose-ps"]
 compose_start_commands = ["cstart", "compose-start"]
 compose_stop_commands = ["cstop", "compose-stop"]
 compose_top_commands = ["ct", "ctop", "compose-top"]
@@ -45,6 +46,8 @@ try:
         compose.kill(args[1:])
     elif command in compose_logs_commands:
         compose.logs(args[1:])
+    elif command in compose_ps_commands:
+        compose.ps(args[1:])
     elif command in compose_start_commands:
         compose.start(args[1:])
     elif command in compose_stop_commands:

@@ -99,6 +99,7 @@ Some docker-compose commands are supported by part of name. Available commands:
 * `cd|cdown|compose-down` - Stop and remove compose resources
 * `cl|clogs|compose-logs` - View output from compose containers
 * `ck|ckill|compose-kill` - Kill compose containers
+* `cps|compose-ps` - List containers
 * `cstart|compose-start` - Start compose services
 * `cstop|compose-stop` - Stop compose services
 * `ct|ctop|compose-top` - Display the running compose processes

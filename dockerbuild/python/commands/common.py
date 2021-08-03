@@ -22,6 +22,7 @@ Compose commands:
   cd, compose-down   Stop and remove compose resources
   cl, compose-logs   View output from compose containers
   ck, compose-kill   Kill compose containers
+      compose-ps     List containers
       compose-start  Start compose services
       compose-stop   Stop compose services
   ct, compose-top    Display the running compose processes
