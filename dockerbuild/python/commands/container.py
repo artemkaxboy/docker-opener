@@ -37,3 +37,22 @@ def logs(args):
     docker_tools.docker_ps(container_id=target_id)
 
     system_tools.prepare_command("docker logs %s %s" % (target_id, options))
+
+
+def kill(args):
+    """
+    Prepares command to kill container.
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    :raises OSError if non interactive mode
+    """
+    if len(args) == 0:
+        raise ValueError("Logs target required")
+
+    target, options = system_tools.divide_target_and_options(args)
+    target_id = docker_tools.get_container_id(target)
+    docker_tools.docker_ps(container_id=target_id)
+
+    if system_tools.get_consent("You are killing container `%s`" % docker_tools.get_container_name(target_id)):
+        system_tools.prepare_command("docker kill %s %s" % (target_id, options))

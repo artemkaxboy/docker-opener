@@ -19,6 +19,7 @@ compose_top_commands = ["ct", "ctop", "compose-top"]
 
 # ------------------------------------ container commands
 attach_commands = ["--"]
+kill_commands = ["k", "kill"]
 logs_commands = ["l", "logs"]
 
 try:
@@ -37,8 +38,7 @@ try:
         common.update()
     elif command in version_commands:
         common.version()
-    elif command in logs_commands:
-        container.logs(args[1:])
+
     elif command in compose_down_commands:
         compose.down(args[1:])
     elif command in compose_kill_commands:
@@ -54,6 +54,10 @@ try:
 
     elif command in attach_commands:
         container.attach(args[1:])
+    elif command in kill_commands:
+        container.kill(args[1:])
+    elif command in logs_commands:
+        container.logs(args[1:])
     else:
         container.attach(args)
 

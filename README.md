@@ -76,6 +76,22 @@ Fetching logs for 62f87fb2ce5f978842b65beebffcc87ff09f8a9e3f2f4540da267bd37da486
 ...
 ```
 
+### Kill container
+
+Kill container with `kill|k` command by any known container's property: name, image, port, id. Use any of familiar `docker kill` command options.
+
+#### Fetching logs examples
+
+```shell
+$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener kill w
+Found container with name `w`
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
+bb0f9cecdc4c        nginx               "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp              web
+
+You are killing container `web` [yN]: y
+bb0f9cecdc4c050b3abf0cef1cfe098ca5fdc472441f67369ccff3404e3fe1c6
+```
+
 ### Docker compose commands
 
 Some docker-compose commands are supported by part of name. Available commands:

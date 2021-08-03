@@ -2,6 +2,9 @@ import os
 import subprocess
 import sys
 
+non_interactive_env = "DEBIAN_FRONTEND"
+non_interactive_mode = "noninteractive"
+
 
 def die(*args):
     print('\n'.join(args))
@@ -40,7 +43,6 @@ def divide_target_and_options(args):
 
 
 def prepare_command(command):
-
     debug(command)
 
     file_name = "command.sh"
@@ -51,3 +53,28 @@ def prepare_command(command):
 def debug(text):
     if os.environ.get("DEBUG") == "True":
         print("[DEBUG] - %s" % text)
+
+
+def get_consent(text):
+    """
+    Asks for user consent.
+    :param text: question to ask
+    :return: True if user said yes or DEBIAN_FRONTEND=noninteractive, otherwise False
+    :raises OSError if docker in non interactive mode
+    """
+    debian_frontend = os.environ.get(non_interactive_env)
+
+    if debian_frontend == non_interactive_mode:
+        return True
+
+    print("%s [yN]: " % text, end='')
+    try:
+        answer = input()
+
+        if answer in ['y', 'Y']:
+            return True
+        return False
+    except EOFError:
+        print("Abort.")
+        raise OSError(
+            "Use docker run command with `-i -t` flags or set %s=%s" % (non_interactive_env, non_interactive_mode))

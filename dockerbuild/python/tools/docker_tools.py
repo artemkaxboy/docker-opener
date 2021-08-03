@@ -63,6 +63,18 @@ def get_container_id(target):
     raise ValueError("Container `%s` not found!" % target)
 
 
+def get_container_name(container_id: str):
+    """
+    Finds container name.
+    :param container_id: id of container to find name
+    :return: found container name
+    :raises ValueError if no container found
+    """
+    docker = client.from_env()
+    container: Container = docker.containers.get(container_id)
+    return container.name
+
+
 def get_compose_name(target: str, search_all=False):
     """
     Returns compose's name by it's part

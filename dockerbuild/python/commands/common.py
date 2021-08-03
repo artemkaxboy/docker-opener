@@ -15,6 +15,7 @@ Commands:
 
 Container commands:
   --                 Attach terminal to running container
+  k,  kill           Kill container
   l,  logs           Fetch container logs
 
 Compose commands:
