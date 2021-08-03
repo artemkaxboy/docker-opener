@@ -67,3 +67,4 @@ def version():
     """
     print("Version: %s" % os.environ.get("VERSION"))
     print("Revision: %s" % os.environ.get("REVISION"))
+    print("Created: %s" % os.environ.get("CREATED"))

@@ -27,6 +27,7 @@ LABEL org.opencontainers.image.description="Shell-in to any docker container eas
 
 ENV VERSION=${VERSION}
 ENV REVISION=${REVISION}
+ENV CREATED=${CREATED}
 
 COPY --from=busybox /bin/busybox /busybox
 COPY ./python /python
