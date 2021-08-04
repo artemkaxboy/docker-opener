@@ -2,7 +2,7 @@
 import sys
 
 from commands import compose, common, container
-from tools import system_tools, docker_tools
+from tools import system_tools, docker_common_tools
 
 # ------------------------------------ common commands
 help_commands = ["h", "-h", "help", "--help"]
@@ -22,14 +22,17 @@ compose_top_commands = ["ct", "ctop", "compose-top"]
 attach_commands = ["--"]
 kill_commands = ["k", "kill"]
 logs_commands = ["l", "logs"]
+recreate_commands = ["recreate"]
+upgrade_commands = ["upgrade"]
 
 try:
-    if not docker_tools.is_docker_available():
+    if not docker_common_tools.is_docker_available():
         raise OSError("Docker is not available")
 
     args = sys.argv[1:]
     if len(args) == 0:
-        raise ValueError("Target required")
+        common.help()
+        raise ValueError("Command or target required.")
 
     command = args[0]
 
@@ -61,6 +64,10 @@ try:
         container.kill(args[1:])
     elif command in logs_commands:
         container.logs(args[1:])
+    elif command in recreate_commands:
+        container.recreate(args[1:])
+    elif command in upgrade_commands:
+        container.upgrade(args[1:])
     else:
         container.attach(args)
 

@@ -4,7 +4,7 @@ Shell-in to any docker container easily
 
 ## What it is
 
-It is a simple tool to open shell to any running docker container. How to open distroless container? How to open scratch container? It is not a question any more.
+It is a simple tool to open shell to any running docker container. How to open distroless container? How to open scratch container? It is not a question anymore.
 
 ## How to use
 
@@ -80,7 +80,7 @@ Fetching logs for 62f87fb2ce5f978842b65beebffcc87ff09f8a9e3f2f4540da267bd37da486
 
 Kill container with `kill|k` command by any known container's property: name, image, port, id. Use any of familiar `docker kill` command options.
 
-#### Fetching logs examples
+#### Kill examples
 
 ```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener kill w
@@ -91,6 +91,14 @@ bb0f9cecdc4c        nginx               "/docker-entrypoint.…"   About a minut
 You are killing container `web` [yN]: y
 bb0f9cecdc4c050b3abf0cef1cfe098ca5fdc472441f67369ccff3404e3fe1c6
 ```
+
+### Recreate container
+
+Recreate container with `recreate` command by any known container's property: name, image, port, id. The command will kill current container and create the same one.
+
+### Upgrade container
+
+Upgrade container with `upgrade` command by any known container's property: name, image, port, id. The command will pull container's image, kill current container and create identical one using updated image.
 
 ### Docker compose commands
 
@@ -127,7 +135,7 @@ Stopping infrastructure_registry_1  ... done
 
 ### Update
 
-The easiest way to use latest version of the utilty is to use latest tag `artemkaxboy/opener:latest` or use it without tag `artemkaxboy/opener`. To update latest version use `update|u` command:
+The easiest way to use the latest version of the utility is to use the latest tag `artemkaxboy/opener:latest` or use it without tag `artemkaxboy/opener`. To update the latest version use `update|u` command:
 
 ```shell
 $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener update

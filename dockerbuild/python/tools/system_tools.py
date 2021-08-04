@@ -31,10 +31,10 @@ def os_run(*command, stdout=True):
 
 def divide_target_and_options(args):
     if len(args) == 0:
-        raise ValueError("Logs target required!")
+        raise ValueError("Target required")
     elif len(args) == 1:
         if args[0][0] == '-':
-            raise ValueError("Logs target required!")
+            raise ValueError("Target required")
         return args[0], ""
     else:
         if args[0][0] == '-':

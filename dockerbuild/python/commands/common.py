@@ -1,9 +1,10 @@
 import os
 import socket
 
-from docker import client
 from docker.errors import NotFound, APIError
 from docker.models.images import Image
+
+from tools.docker_common_tools import get_docker
 
 help_msg = """
 Usage: COMMAND [OPTIONS]
@@ -15,8 +16,10 @@ Commands:
 
 Container commands:
   --                 Attach terminal to running container
-  k,  kill           Kill container
+  k,  kill           Kill containers
   l,  logs           Fetch container logs
+      upgrade        Pull container's image and recreate it
+      recreate       Recreate container
 
 Compose commands:
   cd, compose-down   Stop and remove compose resources
@@ -30,6 +33,8 @@ Compose commands:
 To get more help with opener, check out our docs at https://github.com/artemkaxboy/docker-opener
 """
 
+
+# todo - kill confirmation should be positive by default if only one container found
 
 # noinspection PyShadowingBuiltins
 def help():
@@ -47,7 +52,7 @@ def update():
     :raises ValueError cannot find current container image name
     """
     hostname = socket.gethostname()
-    docker = client.from_env()
+    docker = get_docker()
     try:
         current_image: Image = docker.containers.get(hostname).image
     except NotFound:

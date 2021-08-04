@@ -1,5 +1,6 @@
 from tools import system_tools
-from tools.docker_tools import docker_ps, get_compose_name, make_fake_compose, fake_compose_path
+from tools.docker_common_tools import docker_ps
+from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose
 
 compose_project = "docker-compose --project-name %s --file "
 compose_logs_command = compose_project + fake_compose_path + " logs %s"
