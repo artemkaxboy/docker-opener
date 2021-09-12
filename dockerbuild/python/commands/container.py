@@ -3,7 +3,7 @@ from tools import docker_container_tools, docker_common_tools, docker_tools, doc
 connect_command = "docker exec --user 0 -it %s %s"
 
 
-def attach(args):
+def shell(args):
     """
     Prepares command to attach to container.
     :param args: array of command args, must have exactly one arg, which is any container's property to connect
@@ -24,40 +24,213 @@ def attach(args):
 def logs(args):
     """
     Prepares command to fetch container logs.
+
+    Usage:  docker logs [OPTIONS] CONTAINER
+
+    Fetch the logs of a container
+
+    Options:
+          --details        Show extra details provided to logs
+      -f, --follow         Follow log output
+          --since string   Show logs since timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
+      -n, --tail string    Number of lines to show from the end of the logs (default "all")
+      -t, --timestamps     Show timestamps
+          --until string   Show logs before a timestamp (e.g. 2013-01-02T13:23:37Z) or relative (e.g. 42m for 42 minutes)
+
     :param args: array of command args, must have attribute to find container at first or last place
     :return: None
     :raises ValueError if no target in args
     """
-    if len(args) == 0:
-        raise ValueError("Logs target required")
+    docker_container_tools.docker_command("logs", args)
 
-    target, options = system_tools.divide_target_and_options(args)
-    target_id = docker_container_tools.find_container_id(target)
-    docker_common_tools.docker_ps(container_ids=[target_id])
 
-    system_tools.prepare_command("docker logs %s %s" % (target_id, options))
+def attach(args):
+    """
+    Prepares command to attach to containers.
+
+    Usage:  docker attach [OPTIONS] CONTAINER
+
+    Attach local standard input, output, and error streams to a running container
+
+    Options:
+          --detach-keys string   Override the key sequence for detaching a container
+          --no-stdin             Do not attach STDIN
+          --sig-proxy            Proxy all received signals to the process (default true)
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("attach", args)
+
+
+def docker_exec(args):
+    """
+    Prepares command to exec in containers.
+
+    Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+    Run a command in a running container
+
+    Options:
+      -d, --detach               Detached mode: run command in the background
+          --detach-keys string   Override the key sequence for detaching a container
+      -e, --env list             Set environment variables
+          --env-file list        Read in a file of environment variables
+      -i, --interactive          Keep STDIN open even if not attached
+          --privileged           Give extended privileges to the command
+      -t, --tty                  Allocate a pseudo-TTY
+      -u, --user string          Username or UID (format: <name|uid>[:<group|gid>])
+      -w, --workdir string       Working directory inside the container
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("exec", args, require_command=True)
+
+
+def inspect(args):
+    """
+    Prepares command to inspect a container.
+
+    Usage:  docker inspect [OPTIONS] NAME|ID [NAME|ID...]
+
+    Return low-level information on Docker objects
+
+    Options:
+      -f, --format string   Format the output using the given Go template
+      -s, --size            Display total file sizes if the type is container
+          --type string     Return JSON for specified type
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("inspect", args, allow_multiple_target=True)
 
 
 def kill(args):
     """
     Prepares command to kill containers.
+
+    Usage:  docker kill [OPTIONS] CONTAINER [CONTAINER...]
+
+    Kill one or more running containers
+
+    Options:
+      -s, --signal string   Signal to send to the container (default "KILL")
+
     :param args: array of command args, must have attribute to find container at first or last place
     :return: None
     :raises ValueError if no target in args
     :raises OSError if non interactive mode
     """
-    if len(args) == 0:
-        raise ValueError("Kill target required")
+    docker_container_tools.docker_command("kill", args, allow_multiple_target=True,
+                                          confirm_many="You are killing following containers")
 
-    target, options = system_tools.divide_target_and_options(args)
-    target_container_ids = docker_container_tools.find_container_ids(target, raise_if_not_found=True)
 
-    docker_common_tools.docker_ps(container_ids=target_container_ids)
+def pause(args):
+    """
+    Prepares command to pause containers.
 
-    if system_tools.get_consent("You are killing %d container(s)" % len(target_container_ids)):
-        commands = '\n'.join(map(lambda target_id: "docker kill %s %s" %
-                                                   (target_id, options), target_container_ids))
-        system_tools.prepare_command(commands)
+    Usage:  docker pause CONTAINER [CONTAINER...]
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("pause", args, allow_multiple_target=True, allow_options=False)
+
+
+def unpause(args):
+    """
+    Prepares command to unpause containers.
+
+    Usage:  docker unpause CONTAINER [CONTAINER...]
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("unpause", args, allow_multiple_target=True, allow_options=False)
+
+
+def stop(args):
+    """
+    Prepares command to stop containers.
+
+    Usage:  docker stop [OPTIONS] CONTAINER [CONTAINER...]
+
+    Stop one or more running containers
+
+    Options:
+      -t, --time int   Seconds to wait for stop before killing it (default 10)
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("stop", args, allow_multiple_target=True)
+
+
+def start(args):
+    """
+    Prepares command to start containers.
+
+    Usage:  docker start [OPTIONS] CONTAINER [CONTAINER...]
+
+    Start one or more stopped containers
+
+    Options:
+      -a, --attach               Attach STDOUT/STDERR and forward signals
+          --detach-keys string   Override the key sequence for detaching a container
+      -i, --interactive          Attach container's STDIN
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("start", args, allow_multiple_target=True, search_all=True)
+
+
+def restart(args):
+    """
+    Prepares command to restart containers.
+
+    Usage:  docker restart [OPTIONS] CONTAINER [CONTAINER...]
+
+    Restart one or more containers
+
+    Options:
+      -t, --time int   Seconds to wait for stop before killing the container (default 10)
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("restart", args, allow_multiple_target=True)
+
+
+def rm(args):
+    """
+    Prepares command to remove containers.
+
+    Usage:  docker rm [OPTIONS] CONTAINER [CONTAINER...]
+
+    Remove one or more containers
+
+    Options:
+      -f, --force     Force the removal of a running container (uses SIGKILL)
+      -l, --link      Remove the specified link
+      -v, --volumes   Remove anonymous volumes associated with the container
+
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    docker_container_tools.docker_command("rm", args, allow_multiple_target=True, search_all=True,
+                                          confirm_many="You are removing following containers")
 
 
 def upgrade(args):
