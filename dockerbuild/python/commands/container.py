@@ -140,7 +140,8 @@ def pause(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("pause", args, allow_multiple_target=True, allow_options=False)
+    docker_container_tools.docker_command("pause", args, allow_multiple_target=True, allow_options=False,
+                                          confirm_many="You are pausing following containers")
 
 
 def unpause(args):
@@ -153,7 +154,8 @@ def unpause(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("unpause", args, allow_multiple_target=True, allow_options=False)
+    docker_container_tools.docker_command("unpause", args, allow_multiple_target=True, allow_options=False,
+                                          confirm_many="You are unpausing following containers")
 
 
 def stop(args):
@@ -171,7 +173,8 @@ def stop(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("stop", args, allow_multiple_target=True)
+    docker_container_tools.docker_command("stop", args, allow_multiple_target=True,
+                                          confirm_many="You are stopping following containers")
 
 
 def start(args):
@@ -191,7 +194,8 @@ def start(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("start", args, allow_multiple_target=True, search_all=True)
+    docker_container_tools.docker_command("start", args, allow_multiple_target=True, search_all=True,
+                                          confirm_many="You are starting following containers")
 
 
 def restart(args):
@@ -209,7 +213,8 @@ def restart(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("restart", args, allow_multiple_target=True)
+    docker_container_tools.docker_command("restart", args, allow_multiple_target=True,
+                                          confirm_many="You are restarting following containers")
 
 
 def rm(args):
