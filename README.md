@@ -149,13 +149,13 @@ latest: Pulling from artemkaxboy/opener
 To make the command shorter use linux alias. For current terminal session:
 
 ```shell
-alias opener='docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'
+alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'
 ```
 
 Or permanently (logout and login or new terminal session required):
 
 ```shell
-echo "alias opener='docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
+echo "alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
 ```
 
 ### Alias usage
