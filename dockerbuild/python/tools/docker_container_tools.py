@@ -2,7 +2,8 @@ import re
 
 from docker.models.containers import Container
 
-from tools import docker_image_tools, docker_common_tools
+from errors import ObjectNotFoundError
+from tools import docker_image_tools, docker_common_tools, system_tools
 from tools.docker_common_tools import get_docker
 
 
@@ -72,37 +73,46 @@ def get_container_name(container_id: str):
 
 
 def find_container(target):
+    """
+    Finds one container by name, image, id or port.
+
+    :param target: known container property
+    :return: found container id
+    :raises ObjectNotFoundError container is not found by given attribute or more than one container found
+    """
     options = find_containers(target)
 
     if len(options) == 0:
-        raise ValueError("Container `%s` not found!" % target)
+        raise ObjectNotFoundError("Container `%s` not found!" % target)
 
     if len(options) != 1:
         docker_common_tools.docker_ps(list(map(lambda c: c.id, options)))
-        raise ValueError("More than one container `%s` found!" % target)
+        raise ObjectNotFoundError("More than one container `%s` found!" % target)
 
     return options[0]
 
 
 def find_container_id(target):
     """
-    Returns container's ID by name, image, id, port.
+    Finds one container's id by name, image, id or port.
+
     :param target: known attribute of wanted container
     :return: Found container's ID
-    :raises ValueError if container not found
+    :raises ObjectNotFoundError if container not found or more than one container found
     """
     return find_container(target).id
 
 
-def find_containers(target, raise_if_not_found=False):
+def find_containers(target, raise_if_not_found=False, search_all=False):
     """
     Returns container by name, image, id, port.
+    :param search_all: include stopped containers
     :param raise_if_not_found: raise error if no containers found
     :param target: known attribute of wanted container
     :return: Found container
     :raises ValueError if container not found
     """
-    containers = get_docker().containers.list()
+    containers = get_docker().containers.list(all=search_all)
 
     container: Container
     found_containers = []
@@ -146,8 +156,8 @@ def find_containers(target, raise_if_not_found=False):
     return found_containers
 
 
-def find_container_ids(target: str, raise_if_not_found: bool = False):
-    return list(map(lambda c: c.id, find_containers(target, raise_if_not_found)))
+def find_container_ids(target: str, raise_if_not_found: bool = False, search_all: bool = False):
+    return list(map(lambda c: c.id, find_containers(target, raise_if_not_found, search_all=search_all)))
 
 
 def get_ports(container: Container):
@@ -208,3 +218,44 @@ def port_to_string(port):
         return str(port)
     if port_type is str:
         return re.findall(r"\d+", port)[0]
+
+
+def docker_command(docker_command, args, allow_multiple_target=False, allow_options=True, require_command=False,
+                   search_all=False, confirm_many=None):
+    """
+    Prepares command to fetch container logs.
+    :param args: array of command args, must have attribute to find container at first or last place
+    :return: None
+    :raises ValueError if no target in args
+    """
+    args1, command = system_tools.divide_options_and_command(args)
+    if not require_command and len(command) > 0:
+        raise ValueError("Command is not allowed")
+    if require_command and len(command) < 1:
+        raise ValueError("Command required")
+
+    target, options = system_tools.divide_target_and_options(args1)
+    if not allow_options and len(options) > 0:
+        raise ValueError("Options are not allowed")
+    if len(target) == 0:
+        raise ValueError("Target required")
+
+    target_ids = find_container_ids(target, search_all=search_all)
+    if len(target_ids) == 0:
+        raise ValueError("Container `%s` not found!" % target)
+
+    if len(target_ids) > 1:
+        if not allow_multiple_target:
+            docker_common_tools.docker_ps(target_ids, search_all=search_all)
+            raise ValueError("More than one container `%s` found!" % target)
+
+        if confirm_many is not None:
+            docker_common_tools.docker_ps(target_ids, search_all=search_all)
+            if not system_tools.get_consent(confirm_many):
+                exit(0)
+
+    docker_common_tools.docker_ps(target_ids, search_all=search_all)
+
+    to_run = "docker %s %s %s %s" % (docker_command, options, " ".join(target_ids), " ".join(command))
+    print(to_run)
+    system_tools.prepare_command(to_run)

@@ -2,6 +2,7 @@
 import sys
 
 from commands import compose, common, container
+from errors import OpenerBaseException
 from tools import system_tools, docker_common_tools
 
 # ------------------------------------ common commands
@@ -12,16 +13,28 @@ version_commands = ["v", "-v", "version", "--version"]
 # ------------------------------------ compose commands
 compose_down_commands = ["cd", "cdown", "compose-down"]
 compose_kill_commands = ["ck", "ckill", "compose-kill"]
-compose_logs_commands = ["cl", "clogs", "compose-logs"]
+compose_logs_commands = ["cl", "clog", "clogs", "compose-logs"]
 compose_ps_commands = ["cps", "compose-ps"]
 compose_start_commands = ["cstart", "compose-start"]
 compose_stop_commands = ["cstop", "compose-stop"]
 compose_top_commands = ["ct", "ctop", "compose-top"]
 
 # ------------------------------------ container commands
-attach_commands = ["--"]
+shell_commands = ["--"]
+attach_commands = ["a", "attach"]
+exec_commands = ["e", "exec"]
+inspect_commands = ["i", "inspect"]
 kill_commands = ["k", "kill"]
 logs_commands = ["l", "logs"]
+rm_commands = ["rm"]
+
+pause_commands = ["p", "pause"]
+unpause_commands = ["un", "unpause"]
+
+stop_commands = ["sto", "stop"]
+start_commands = ["sta", "start"]
+restart_commands = ["res", "restart"]
+
 recreate_commands = ["recreate"]
 upgrade_commands = ["upgrade"]
 
@@ -58,19 +71,42 @@ try:
     elif command in compose_top_commands:
         compose.top(args[1:])
 
+    elif command in shell_commands:
+        container.shell(args[1:])
     elif command in attach_commands:
         container.attach(args[1:])
+    elif command in exec_commands:
+        container.docker_exec(args[1:])
+    elif command in inspect_commands:
+        container.inspect(args[1:])
     elif command in kill_commands:
         container.kill(args[1:])
     elif command in logs_commands:
         container.logs(args[1:])
+    elif command in rm_commands:
+        container.rm(args[1:])
+
+    elif command in pause_commands:
+        container.pause(args[1:])
+    elif command in unpause_commands:
+        container.unpause(args[1:])
+
+    elif command in stop_commands:
+        container.stop(args[1:])
+    elif command in start_commands:
+        container.start(args[1:])
+    elif command in restart_commands:
+        container.restart(args[1:])
+
     elif command in recreate_commands:
         container.recreate(args[1:])
     elif command in upgrade_commands:
         container.upgrade(args[1:])
     else:
-        container.attach(args)
+        container.shell(args)
 
+except OpenerBaseException as e:
+    system_tools.die("Error: " + str(e))
 except (ValueError, OSError) as e:
     system_tools.die("Error: " + str(e))
 except KeyboardInterrupt:

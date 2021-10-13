@@ -42,6 +42,14 @@ def divide_target_and_options(args):
         return args[0], ' '.join(args[1:])
 
 
+def divide_options_and_command(args):
+    try:
+        separator_index = args.index("--")
+        return args[0:separator_index], args[separator_index + 1:]
+    except ValueError:
+        return args, []
+
+
 def prepare_command(command):
     debug(command)
 
