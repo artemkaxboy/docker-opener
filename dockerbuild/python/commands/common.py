@@ -16,10 +16,19 @@ Commands:
 
 Container commands:
   --                 Attach terminal to running container
+  a,  attach         Attach local standard input, output, and error streams to a running container
+  e,  exec           Run a command in a running container
+  i,  inspect        Return low-level information on Docker objects
   k,  kill           Kill containers
   l,  logs           Fetch container logs
-      upgrade        Pull container's image and recreate it
+  p,  pause          Pause all processes within one or more containers
       recreate       Recreate container
+  res,restart        Restart one or more containers
+      rm             Remove one or more containers
+  sta,start          Start one or more stopped containers
+  sto,stop           Stop one or more running containers
+      upgrade        Pull container's image and recreate it
+      unpause        Unpause all processes within one or more containers
 
 Compose commands:
   cd, compose-down   Stop and remove compose resources
