@@ -6,6 +6,37 @@ Shell-in to any docker container easily
 
 It is a simple tool to open shell to any running docker container. How to open distroless container? How to open scratch container? It is not a question anymore.
 
+## Installation
+
+The `opener` is just a regular docker image it may be used without installation, like: 
+
+```shell
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener [COMMAND] [PARAMS]
+```
+
+Linux aliases can be used to make the command shorter. For only current terminal session:
+
+```shell
+alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'
+```
+
+Or permanently (re-login required):
+
+```shell
+echo "alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
+```
+
+### Alias usage
+
+After adding alias you can use short form:
+
+```shell
+# long
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener [COMMAND] [PARAMS]
+# short
+opener [COMMAND] [PARAMS]
+```
+
 ## How to use
 
 ### Connecting to container
@@ -24,7 +55,7 @@ $ docker run -d --name docker-web portainer/portainer-ce
 Connect by name:
 
 ```shell
-$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener web
+$ opener web
 Found container with name containing: web
 CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS                NAMES
 62f87fb2ce5f        portainer/portainer-ce   "/portainer"        29 seconds ago      Up 28 seconds       8000/tcp, 9000/tcp   docker-web
@@ -39,7 +70,7 @@ Removing busybox...
 Connect by image name:
 
 ```shell
-$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener port
+$ opener port
 Found container with name containing: port
 ...
 ```
@@ -47,7 +78,7 @@ Found container with name containing: port
 Connect by port number:
 
 ```shell
-$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener 9000
+$ opener 9000
 Found container with port containing: 9000
 ...
 ```
@@ -55,14 +86,37 @@ Found container with port containing: 9000
 Connect by container ID:
 
 ```shell
-$ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener 62f8
+$ opener 62f8
 Found container with ID containing: 62f8
 ...
 ```
 
-### Fetching logs
+### Special commands
 
-Fetch logs with `logs|l` command by any known container's property: name, image, port, id. Use any of familiar `docker logs` command options.
+| Command | Result |
+| --- | --- |
+| help | Show help message |
+| update | Update (pull) `opener` image |
+| version | Show `opener` version |
+
+### Container commands supported by opener
+
+| Command | Docker example | Opener short example | Result |
+| --- | --- | --- | --- |
+| `--` | | `docker -- ng` | Run new shell process in the container and connect |
+| `attach` | `docker attach nginx` | `opener a ng` | Attach local standard input, output, and error streams to a running container |
+| `exec` | `docker exec nginx date` | `opener e ng date` | Run a command in a running container |
+| `inspect` | `docker inspect nginx` | `opener i ng` | Return low-level information on Docker objects |
+| `kill` | `docker kill nginx` | `opener k ng` | Kill one or more running containers |
+| `logs` | `docker logs nginx -f` | `opener l ng -f` | Fetch the logs of a container |
+| `pause` | `docker pause nginx` | `opener p ng` | Pause all processes within one or more containers |
+| `recreate` | | `opener recreate ng` | Kill and Remove running container and Create and Run the same container |
+| `restart` | `docker restart nginx` | `opener res ng` | Restart one or more containers |
+| `rm` | `docker rm nginx` | `opener rm ng` | Remove one or more containers |
+| `start` | `docker start nginx` | `opener sta ng` | Start one or more stopped containers |
+| `stop` | `docker stop nginx` | `opener sto ng` | Stop one or more running containers |
+| `unpause` | `docker unpause nginx` | `opener unpause ng` | Unpause all processes within one or more containers |
+| `upgrade` | | `opener upgrade ng` | Pull container's image, Kill and Remove running container, Create and Run the same container with updated image |
 
 #### Fetching logs examples
 
@@ -142,35 +196,6 @@ $ docker run -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener
 Using default tag: latest
 latest: Pulling from artemkaxboy/opener
 ...
-```
-
-## Alias
-
-To make the command shorter use linux alias. For current terminal session:
-
-```shell
-alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'
-```
-
-Or permanently (logout and login or new terminal session required):
-
-```shell
-echo "alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
-```
-
-### Alias usage
-
-After adding alias you can use short form, e.g.:
-
-```shell
-# attach to container infrastructure_registry_1
-$ opener reg
-
-# view last 200 lines and follow logs of infrastructure compose 
-$ opener clogs infra -f --tail 200
-
-# send SIGTERM signal to registry service of infrastructure compose
-$ opener ckill infra -s SIGTERM registry
 ```
 
 ## License
