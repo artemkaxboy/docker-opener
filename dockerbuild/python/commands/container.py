@@ -1,3 +1,4 @@
+from errors import ArgumentError
 from tools import docker_container_tools, docker_common_tools, docker_tools, docker_image_tools, system_tools
 
 connect_command = "docker exec --user 0 -it %s %s"
@@ -5,13 +6,17 @@ connect_command = "docker exec --user 0 -it %s %s"
 
 def shell(args):
     """
-    Prepares command to attach to container.
+    Prepares command to attach to container's shell.
+
     :param args: array of command args, must have exactly one arg, which is any container's property to connect
     :return: None
-    :raises ValueError if no or more than one target in args
+    :raises ArgumentError if wrong arguments passed
+
+    :raises ObjectNotFoundError if container not found or more than one container found
+    :raises ValueError if container not found or more than one container found
     """
     if len(args) != 1:
-        raise ValueError("Exactly 1 target required")
+        raise ArgumentError("Exactly 1 target required")
 
     target_id = docker_container_tools.find_container_id(args[0])
     docker_common_tools.docker_ps(container_ids=[target_id])

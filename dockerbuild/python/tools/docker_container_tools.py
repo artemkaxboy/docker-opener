@@ -2,6 +2,7 @@ import re
 
 from docker.models.containers import Container
 
+from errors import ObjectNotFoundError
 from tools import docker_image_tools, docker_common_tools, system_tools
 from tools.docker_common_tools import get_docker
 
@@ -72,24 +73,32 @@ def get_container_name(container_id: str):
 
 
 def find_container(target):
+    """
+    Finds one container by name, image, id or port.
+
+    :param target: known container property
+    :return: found container id
+    :raises ObjectNotFoundError container is not found by given attribute or more than one container found
+    """
     options = find_containers(target)
 
     if len(options) == 0:
-        raise ValueError("Container `%s` not found!" % target)
+        raise ObjectNotFoundError("Container `%s` not found!" % target)
 
     if len(options) != 1:
         docker_common_tools.docker_ps(list(map(lambda c: c.id, options)))
-        raise ValueError("More than one container `%s` found!" % target)
+        raise ObjectNotFoundError("More than one container `%s` found!" % target)
 
     return options[0]
 
 
 def find_container_id(target):
     """
-    Returns container's ID by name, image, id, port.
+    Finds one container's id by name, image, id or port.
+
     :param target: known attribute of wanted container
     :return: Found container's ID
-    :raises ValueError if container not found
+    :raises ObjectNotFoundError if container not found or more than one container found
     """
     return find_container(target).id
 
@@ -211,7 +220,8 @@ def port_to_string(port):
         return re.findall(r"\d+", port)[0]
 
 
-def docker_command(docker_command, args, allow_multiple_target=False, allow_options=True, require_command=False, search_all=False, confirm_many=None):
+def docker_command(docker_command, args, allow_multiple_target=False, allow_options=True, require_command=False,
+                   search_all=False, confirm_many=None):
     """
     Prepares command to fetch container logs.
     :param args: array of command args, must have attribute to find container at first or last place

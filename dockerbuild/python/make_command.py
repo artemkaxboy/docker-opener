@@ -2,6 +2,7 @@
 import sys
 
 from commands import compose, common, container
+from errors import OpenerBaseException
 from tools import system_tools, docker_common_tools
 
 # ------------------------------------ common commands
@@ -104,6 +105,8 @@ try:
     else:
         container.shell(args)
 
+except OpenerBaseException as e:
+    system_tools.die("Error: " + str(e))
 except (ValueError, OSError) as e:
     system_tools.die("Error: " + str(e))
 except KeyboardInterrupt:
