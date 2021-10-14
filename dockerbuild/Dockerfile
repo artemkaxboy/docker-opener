@@ -22,8 +22,8 @@ LABEL org.opencontainers.image.revision=${REVISION}
 LABEL org.opencontainers.image.vendor="artemkaxboy@gmail.com"
 LABEL org.opencontainers.image.licenses="Apache 2.0"
 LABEL org.opencontainers.image.ref.name=${REF_NAME}
-LABEL org.opencontainers.image.title="Any docker container opener"
-LABEL org.opencontainers.image.description="Shell-in to any docker container easily"
+LABEL org.opencontainers.image.title="Docker opener"
+LABEL org.opencontainers.image.description="Manage your docker containers easily"
 
 ENV VERSION=${VERSION}
 ENV REVISION=${REVISION}
