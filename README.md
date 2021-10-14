@@ -2,7 +2,7 @@
 
 Manage your docker containers easily
 
-## What it is
+## What is it
 
 It is a tool to simplify everyday work with running containers and compose-projects.
 
@@ -158,7 +158,7 @@ Found container with ID containing: 62f8
 
 #### Managing containers without remembering their full names
 
-Any [supported container command](#container-commands-supported-by-opener) can be performed using a short unique containers attribute.
+Any [supported container command](#container-commands-supported-by-opener) can be performed using a short unique container's attribute.
 
 With Example:
 
@@ -186,7 +186,7 @@ opener stop postgre
 
 Finding run command of container which was run weeks ago might be a challenge. `opener` can upgrade your containers without manually typing all command.
 
-Example:
+Example, once run container:
 
 ```shell
 docker run -d --name=netdata \
@@ -205,7 +205,7 @@ docker run -d --name=netdata \
   netdata/netdata
 ```
 
-There is no need to find the whole command again, `opener upgrade` do the job
+There is no need to find the whole command again, `opener upgrade` do the job:
 
 ```shell
 $ opener upgrade netdata
@@ -225,7 +225,7 @@ Started `netdata`
 
 #### Managing compose-project without entering their work directories
 
-Example:
+Example, sometime earlier compose-project was started:
 
 ```shell
 $ docker ps
@@ -238,7 +238,7 @@ d443a12c54e1   app:v1.0     "/myapp"                 6 weeks ago   Up 6 week   8
 ...            worker:v1.0  ...                      6 weeks ago   Up 6 week   ...             site_worker_2
 ```
 
-It might be a challenge to find compose-file on a remote server to stop the compose-project, it even could have been deleted since compose-project was started, in that case the last remaining option was to stop or stop/kill all containers one by one.
+It might be a challenge to find compose-file on the server to stop the compose-project, the file could even have been deleted since compose-project was started, in that case the last remaining option was to stop or stop/kill all containers one by one.
 
 `opener compose-stop site` and `opener compose-kill site` will help:
 
@@ -258,7 +258,7 @@ Killing site_mongo_1     ... done
 
 #### Recreating running container
 
-Example:
+Example, your project is running with database and many other modules:
 
 ```shell
 $ docker ps
@@ -269,7 +269,7 @@ d443a12c54e1   app:v1.0     "/myapp"                 6 hours ago   Up 6 hour   8
 ...            web:v1.0     ...                      6 weeks ago   Up 6 week   ...             site_web_1
 ```
 
-When your compose-project contains locally created image, e.g. `app:v1.0` you might want to test new build of your image without restarting all compose-project.
+You made a new build of one of your modules `app:v1.0` and want to test or run it without restarting the whole compose-project. 
 
 `opener recreate` do it, new container will be created with new build of `app:v1.0`:
 
