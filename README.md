@@ -93,13 +93,13 @@ All regular docker-compose examples must be run in the compose.yaml file directo
 
 | Command | Regular docker-compose example | Opener short example | Result |
 | --- | --- | --- | --- |
-| `down` | `docker-compose down` |  `opener cdown app` | Stop and remove resources |
-| `logs` | `docker-compose logs` |  `opener clogs app` | View output from containers |
-| `kill` | `docker-compose kill` |  `opener ckill app` | Stop and remove composes resources |
-| `ps` | `docker-compose ps` |  `opener cps app` | List containers |
-| `start` | `docker-compose start` |  `opener cstart app` | Start services |
-| `stop` | `docker-compose stop` |  `opener cstop app` | Stop services |
-| `top` | `docker-compose top` |  `opener ctop app` | Display the running processes |
+| `compose-down` | `docker-compose down` |  `opener cdown app` | Stop and remove resources |
+| `compose-logs` | `docker-compose logs` |  `opener clogs app` | View output from containers |
+| `compose-kill` | `docker-compose kill` |  `opener ckill app` | Stop and remove composes resources |
+| `compose-ps` | `docker-compose ps` |  `opener cps app` | List containers |
+| `compose-start` | `docker-compose start` |  `opener cstart app` | Start services |
+| `compose-stop` | `docker-compose stop` |  `opener cstop app` | Stop services |
+| `compose-top` | `docker-compose top` |  `opener ctop app` | Display the running processes |
 
 `app` - is a name/part of a name of running compose-project, which is usually equals to the name of docker-compose file's directory.
 
