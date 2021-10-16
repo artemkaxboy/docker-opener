@@ -1,4 +1,4 @@
-from errors import ArgumentError
+from errors import ArgumentError, ObjectNotFoundError
 from tools import docker_container_tools, docker_common_tools, docker_tools, docker_image_tools, system_tools
 
 connect_command = "docker exec --user 0 -it %s %s"
@@ -46,7 +46,11 @@ def logs(args):
     :return: None
     :raises ValueError if no target in args
     """
-    docker_container_tools.docker_command("logs", args)
+    try:
+        docker_container_tools.docker_command("logs", args)
+
+    except ObjectNotFoundError as e:
+        docker_container_tools.docker_command("logs", args, search_all=True)
 
 
 def attach(args):

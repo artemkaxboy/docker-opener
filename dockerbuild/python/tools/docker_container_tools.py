@@ -242,7 +242,7 @@ def docker_command(docker_command, args, allow_multiple_target=False, allow_opti
 
     target_ids = find_container_ids(target, search_all=search_all)
     if len(target_ids) == 0:
-        raise ValueError("Container `%s` not found!" % target)
+        raise ObjectNotFoundError("Container `%s` not found!" % target)
 
     if len(target_ids) > 1:
         if not allow_multiple_target:
