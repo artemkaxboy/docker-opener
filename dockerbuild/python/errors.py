@@ -1,4 +1,4 @@
-class OpenerBaseException(BaseException):
+class OpenerBaseException(Exception):
     """ Any application error. """
 
     def __init__(self, *args, **kwargs):

@@ -3,13 +3,17 @@ FROM busybox:1.33.1 as busybox
 
 FROM docker/compose:1.29.2
 
+RUN apk add --no-cache python3 py3-pip
+RUN pip3 install docker
+
+COPY --from=busybox /bin/busybox /busybox
+COPY ./python /python
+COPY ./entrypoint.sh /entrypoint.sh
+
 ARG VERSION=SNAPSHOT
 ARG REVISION=LOCAL
 ARG REF_NAME
 ARG CREATED
-
-RUN apk add --no-cache python3 py3-pip
-RUN pip3 install docker
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.created=${CREATED}
@@ -28,9 +32,5 @@ LABEL org.opencontainers.image.description="Manage your docker containers easily
 ENV VERSION=${VERSION}
 ENV REVISION=${REVISION}
 ENV CREATED=${CREATED}
-
-COPY --from=busybox /bin/busybox /busybox
-COPY ./python /python
-COPY ./entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
