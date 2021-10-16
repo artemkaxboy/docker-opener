@@ -1,0 +1,6 @@
+# Editor configuration, see https://editorconfig.org
+[Makefile]
+charset = utf-8
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
