@@ -1,6 +1,6 @@
 from tools import system_tools
 from tools.docker_common_tools import docker_ps
-from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose
+from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose, get_compose_list
 
 compose_project = "docker-compose --project-name %s --file "
 compose_logs_command = compose_project + fake_compose_path + " logs %s"
@@ -32,6 +32,16 @@ def prepare_command(args, command, search_all=False):
     make_fake_compose(target_name, search_all=search_all)
     arg_string = ' '.join(args[1:])
     system_tools.prepare_command(command % (target_name, arg_string))
+
+
+def clist():
+    """
+    Prepare compose list command.
+    :return: None
+    """
+    print("All available compose projects:")
+    for project in get_compose_list():
+        print(" - %s", project)
 
 
 def logs(args):
@@ -122,4 +132,4 @@ def ps(args):
     if len(args) == 0:
         raise ValueError("Compose ps target required")
 
-    prepare_command(args, compose_ps_command)
+    prepare_command(args, compose_ps_command, search_all=True)

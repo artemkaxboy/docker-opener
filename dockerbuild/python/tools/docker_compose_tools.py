@@ -9,6 +9,33 @@ compose_header = "version: '3.8'\nservices:\n"
 fake_compose_path = "/tmp/compose.yml"
 
 
+def get_compose_list():
+    """
+    # TODO add python docs, count all containers, running containers
+    #  show compose name, X running containers of Y available containers
+    """
+    containers = get_docker().containers.list(
+        filters={"label": compose_project_label}, all=True)
+
+    allSet = {}
+    runningSet = {}
+
+    container: Container
+    for container in containers:
+
+        project = container.labels[compose_project_label]
+        if project is None:
+            continue
+
+        allSet[project] = allSet[project] + 1
+        if container.
+
+
+    projects = set(
+        map(lambda container: container.labels[compose_project_label], containers))
+    return projects
+
+
 def get_compose_name(target: str, search_all=False):
     """
     Returns compose's name by it's part
