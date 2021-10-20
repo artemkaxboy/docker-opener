@@ -17,23 +17,24 @@ def get_compose_list():
     containers = get_docker().containers.list(
         filters={"label": compose_project_label}, all=True)
 
-    allSet = {}
-    runningSet = {}
+    all_set = {}
+    running_set = {}
 
     container: Container
     for container in containers:
 
         project = container.labels[compose_project_label]
         if project is None:
+            # Non compose containers
             continue
 
-        allSet[project] = allSet[project] + 1
-        if container.
+        all_set[project] = all_set.get(project, 0) + 1
+        if container.attrs.get("State", {}).get("Running", False):
+            running_set[project] = running_set.get(project, 0) + 1
 
-
-    projects = set(
-        map(lambda container: container.labels[compose_project_label], containers))
-    return projects
+    print(all_set)
+    print(running_set)
+    return {}
 
 
 def get_compose_name(target: str, search_all=False):
