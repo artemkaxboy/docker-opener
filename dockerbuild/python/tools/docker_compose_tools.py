@@ -32,9 +32,9 @@ def get_compose_list():
         if container.attrs.get("State", {}).get("Running", False):
             running_set[project] = running_set.get(project, 0) + 1
 
-    print(all_set)
-    print(running_set)
-    return {}
+    # create set key: project_name, value: [running count, all count]
+    result_set = dict(map(lambda kv: (kv[0], [running_set[kv[0]], kv[1]]), all_set.items()))
+    return result_set
 
 
 def get_compose_name(target: str, search_all=False):

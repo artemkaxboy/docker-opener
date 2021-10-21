@@ -39,9 +39,10 @@ def clist():
     Prepare compose list command.
     :return: None
     """
-    print("All available compose projects:")
-    for project in get_compose_list():
-        print(" - %s", project)
+    print("All available compose projects (running containers/all containers):")
+    for project_stat in get_compose_list().items():
+        print(" - %s: %d/%d" % (project_stat[0], project_stat[1][0], project_stat[1][1]))
+    print("")
 
 
 def logs(args):
