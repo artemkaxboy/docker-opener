@@ -47,11 +47,11 @@ def get_compose_name(target: str, search_all=False):
     :return: Found compose's name
     :raises ValueError if compose not found
     """
-    containers = get_docker().containers.list(
-        filters={"label": compose_project_label}, all=search_all)
+    containers = get_composed_containers(search_all=search_all)
 
-    projects = set(
-        map(lambda container: container.labels[compose_project_label], containers))
+    # make set of compose projects
+    projects = set(map(lambda container: get_compose_project_name(container), containers))
+
     if target in projects:
         print("Found compose with name `%s`" % target)
         return target
