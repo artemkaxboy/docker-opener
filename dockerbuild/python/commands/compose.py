@@ -36,13 +36,12 @@ def prepare_command(args, command, search_all=False):
 
 def clist():
     """
-    Prepare compose list command.
+    Prints all available compose projects with running/all containers count.
     :return: None
     """
     print("All available compose projects (running containers/all containers):")
     for project_stat in get_compose_list().items():
         print(" - %s: %d/%d" % (project_stat[0], project_stat[1][0], project_stat[1][1]))
-    print("")
 
 
 def logs(args):
