@@ -31,13 +31,14 @@ Container commands:
       upgrade        Pull container's image and recreate it
 
 Compose commands:
-  cd, compose-down   Stop and remove compose resources
-  cl, compose-logs   View output from compose containers
-  ck, compose-kill   Kill compose containers
-      compose-ps     List containers
-      compose-start  Start compose services
-      compose-stop   Stop compose services
-  ct, compose-top    Display the running compose processes
+  cd,  compose-down   Stop and remove compose resources
+  ck,  compose-kill   Kill compose containers
+       compose-list   Show all compose projects
+  cl,  compose-logs   View output from compose containers
+  cps, compose-ps     List containers
+       compose-start  Start compose services
+       compose-stop   Stop compose services
+  ct,  compose-top    Display the running compose processes
 
 To get more help with opener, check out our docs at https://github.com/artemkaxboy/docker-opener
 """
