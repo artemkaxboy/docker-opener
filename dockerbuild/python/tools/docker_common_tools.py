@@ -8,6 +8,7 @@ from tools.system_tools import os_run
 
 container_label_key = "label"
 compose_project_label = "com.docker.compose.project"
+compose_project_dir_label = "com.docker.compose.project.working_dir"
 
 
 def get_docker() -> DockerClient:

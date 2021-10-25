@@ -1,6 +1,7 @@
 from tools import system_tools
 from tools.docker_common_tools import docker_ps
-from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose, get_compose_list
+from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose, \
+    get_compose_containers_list, ComposeContainer
 
 compose_project = "docker-compose --project-name %s --file "
 compose_logs_command = compose_project + fake_compose_path + " logs %s"
@@ -36,12 +37,25 @@ def prepare_command(args, command, search_all=False):
 
 def clist():
     """
-    Prints all available compose projects with running/all containers count.
+    Prints all available compose projects with running/all containers count and compose directories.
     :return: None
     """
     print("All available compose projects (running containers/all containers):")
-    for project_stat in get_compose_list().items():
-        print(" - %s: %d/%d" % (project_stat[0], project_stat[1][0], project_stat[1][1]))
+    for project_stat in get_compose_containers_list().items():
+
+        compose_container: ComposeContainer
+
+        running_containers_count = sum(1 for compose_container in project_stat[1] if compose_container.running)
+        all_containers_count = len(project_stat[1])
+        compose_project_name = project_stat[0]
+
+        print("\n  - %s: %d/%d" % (compose_project_name, running_containers_count, all_containers_count))
+
+        compose_project_dirs = set(
+            map(lambda compose_container_inner: compose_container_inner.project_dir, project_stat[1]))
+        print("    compose directories:")
+        for compose_project_dir in compose_project_dirs:
+            print("    - %s" % compose_project_dir)
 
 
 def logs(args):

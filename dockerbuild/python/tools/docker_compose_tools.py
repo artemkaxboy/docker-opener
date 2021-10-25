@@ -1,7 +1,7 @@
 from docker.models.containers import Container
 
-from tools.docker_common_tools import get_docker, compose_project_label, container_label_key
-from tools.docker_container_tools import is_container_running
+from tools.docker_common_tools import get_docker, compose_project_label, container_label_key, compose_project_dir_label
+from tools.docker_container_tools import is_container_running, get_container_name
 
 compose_service_label = "com.docker.compose.service"
 
@@ -10,7 +10,24 @@ compose_header = "version: '3.8'\nservices:\n"
 fake_compose_path = "/tmp/compose.yml"
 
 
-def get_compose_list():
+class ComposeContainer:
+    name: str
+    running: bool
+    project_dir: str
+    project_name: str
+
+    def __init__(self, name: str = None, running: bool = False, compose_dir: str = None, project_name: str = None):
+        self.name = name
+        self.running = running
+        self.project_dir = compose_dir
+        self.project_name = project_name
+
+    def __str__(self):
+        return ("name = %s, running = %s, compose_dir = %s, compose_name = %s" % (
+            self.name, self.running, self.project_dir, self.project_name))
+
+
+def get_compose_containers_list():
     """
     Finds all available compose projects with running/all containers count.
     :return: Dictionary with key - found compose project names, value - array
@@ -20,7 +37,6 @@ def get_compose_list():
     containers = get_composed_containers(search_all=True)
 
     all_set = {}
-    running_set = {}
 
     container: Container
     for container in containers:
@@ -30,13 +46,15 @@ def get_compose_list():
             # Non compose containers
             continue
 
-        all_set[project_name] = all_set.get(project_name, 0) + 1
-        if is_container_running(container):
-            running_set[project_name] = running_set.get(project_name, 0) + 1
+        container_compose = ComposeContainer(name=container.name, running=is_container_running(container),
+                                             compose_dir=get_compose_project_dir(container),
+                                             project_name=project_name)
 
-    # create set key: project_name, value: [running count, all count]
-    result_set = dict(map(lambda kv: (kv[0], [running_set.get(kv[0], 0), kv[1]]), all_set.items()))
-    return result_set
+        project_containers = all_set.get(project_name, [])
+        project_containers.append(container_compose)
+        all_set[project_name] = project_containers
+
+    return all_set
 
 
 def get_compose_name(target: str, search_all=False):
@@ -87,11 +105,20 @@ def make_fake_compose(target_name: str, search_all=False):
 
 def get_compose_project_name(container: Container):
     """
-    Returns name of compose project for container if container is running in compose.
+    Returns name of compose project for container if container is created in compose.
     :param container: container to find compose
     :return: compose project name or None
     """
     return container.labels.get(compose_project_label, None)
+
+
+def get_compose_project_dir(container: Container):
+    """
+    Returns dir of compose project for container if container is created in compose.
+    :param container: container to find directory
+    :return: compose project directory or None
+    """
+    return container.labels.get(compose_project_dir_label, None)
 
 
 def get_composed_containers(search_all: bool = True):
