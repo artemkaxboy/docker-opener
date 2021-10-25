@@ -259,3 +259,12 @@ def docker_command(docker_command, args, allow_multiple_target=False, allow_opti
     to_run = "docker %s %s %s %s" % (docker_command, options, " ".join(target_ids), " ".join(command))
     print(to_run)
     system_tools.prepare_command(to_run)
+
+
+def is_container_running(container: Container):
+    """
+    Checks if container running or not.
+    :param container: container to check
+    :return: true if running, false - otherwise
+    """
+    return container.attrs.get("State", {}).get("Running", False)

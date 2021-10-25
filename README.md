@@ -94,8 +94,9 @@ All regular docker-compose examples must be run in the compose.yaml file directo
 | Command | Regular docker-compose example | Opener short example | Result |
 | --- | --- | --- | --- |
 | `compose-down` | `docker-compose down` |  `opener cdown app` | Stop and remove resources |
-| `compose-logs` | `docker-compose logs` |  `opener clogs app` | View output from containers |
 | `compose-kill` | `docker-compose kill` |  `opener ckill app` | Stop and remove composes resources |
+| `compose-list` | | `opener clist` | Show all compose projects |
+| `compose-logs` | `docker-compose logs` |  `opener clogs app` | View output from containers |
 | `compose-ps` | `docker-compose ps` |  `opener cps app` | List containers |
 | `compose-start` | `docker-compose start` |  `opener cstart app` | Start services |
 | `compose-stop` | `docker-compose stop` |  `opener cstop app` | Stop services |
