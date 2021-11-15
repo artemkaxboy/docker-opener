@@ -1,7 +1,7 @@
 from tools import system_tools
 from tools.docker_common_tools import docker_ps
 from tools.docker_compose_tools import fake_compose_path, get_compose_name, make_fake_compose, \
-    get_compose_containers_list, ComposeContainer
+    get_compose_containers_list, ComposeContainer, get_stack_containers_list, StackContainer
 
 compose_project = "docker-compose --project-name %s --file "
 compose_logs_command = compose_project + fake_compose_path + " logs %s"
@@ -37,6 +37,15 @@ def prepare_command(args, command, search_all=False):
 
 def clist():
     """
+    Prints all available compose projects and stacks with running/all containers count and compose directories.
+    :return: None
+    """
+    clist_compose()
+    clist_stack()
+
+
+def clist_compose():
+    """
     Prints all available compose projects with running/all containers count and compose directories.
     :return: None
     """
@@ -56,6 +65,22 @@ def clist():
         print("    compose directories:")
         for compose_project_dir in compose_project_dirs:
             print("    - %s" % compose_project_dir)
+
+
+def clist_stack():
+    """
+    Prints all available stacks with running/all containers count.
+    :return: None
+    """
+    print("\nAll available stacks (running containers/all containers):")
+    for stack_stat in get_stack_containers_list().items():
+        stack_container: StackContainer
+
+        running_containers_count = sum(1 for stack_container in stack_stat[1] if stack_container.running)
+        all_containers_count = len(stack_stat[1])
+        stack_name = stack_stat[0]
+
+        print("\n  - %s: %d/%d" % (stack_name, running_containers_count, all_containers_count))
 
 
 def logs(args):

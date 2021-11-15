@@ -10,6 +10,8 @@ container_label_key = "label"
 compose_project_label = "com.docker.compose.project"
 compose_project_dir_label = "com.docker.compose.project.working_dir"
 
+stack_namespace_label = "com.docker.stack.namespace"
+
 
 def get_docker() -> DockerClient:
     """
