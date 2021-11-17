@@ -1,3 +1,4 @@
+from docker.errors import APIError
 from errors import ArgumentError, ObjectNotFoundError
 from tools import docker_container_tools, docker_common_tools, docker_tools, docker_image_tools, system_tools
 
@@ -288,6 +289,10 @@ def recreate(args, need_upgrade: bool = False):
 
     new_container_id = docker_container_tools.copy_container(target_container_id)
     docker_container_tools.stop_container(target_container_id)
-    docker_container_tools.remove_container(target_container_id)
+    try:
+        docker_container_tools.remove_container(target_container_id)
+    except APIError:
+        # container had --rm option
+        print("skipped")
     docker_container_tools.rename_container(new_container_id, target_container_name)
     docker_container_tools.start_container(new_container_id)

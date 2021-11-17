@@ -12,33 +12,38 @@ def get_container(container_id: str) -> Container:
 
 
 def stop_container(container_id: str):
+    print("Stopping ", end='')
     container: Container = get_container(container_id)
-    print("Stopping `%s`" % container.name)
+    print("`%s`" % container.name)
     container.stop()
 
 
 def remove_container(container_id: str):
+    print("Deleting ", end='')
     container: Container = get_container(container_id)
-    print("Deleting `%s`" % container.name)
+    print("`%s`" % container.name)
     container.remove()
 
 
 def rename_container(container_id: str, new_name: str):
+    print("Renaming container ", end='')
     container: Container = get_container(container_id)
-    print("Renaming container `%s` to `%s`" % (container.name, new_name))
+    print("`%s` to `%s`" % (container.name, new_name))
     container.rename(new_name)
 
 
 def start_container(container_id: str):
+    print("Starting ", end='')
     container: Container = get_container(container_id)
-    print("Starting `%s`" % container.name)
+    print("`%s`" % container.name)
     container.start()
     print("Started `%s`" % container.name)
 
 
 def copy_container(container_id: str, new_container_name: str = None) -> str:
+    print("Copying container ", end='')
     container = get_container(container_id)
-    print("Copying container `%s` to " % container.name, end='')
+    print("`%s` to " % container.name, end='')
     new_container_id = get_docker().api.create_container(image=docker_image_tools.get_image_name(container),
                                                          command=container.attrs.get('Args', None),
                                                          hostname=container.attrs['Config'].get('Hostname', None),
