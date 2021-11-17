@@ -277,6 +277,7 @@ def recreate(args, need_upgrade: bool = False):
     target_container = docker_container_tools.find_container(args[0])
     target_container_id = target_container.id
     target_container_name = target_container.name
+    target_autoremovable = docker_container_tools.is_container_autoremovable(target_container)
     target_container_image = docker_image_tools.get_image_name(target_container)
 
     docker_common_tools.docker_ps(container_ids=[target_container_id])
@@ -288,6 +289,7 @@ def recreate(args, need_upgrade: bool = False):
 
     new_container_id = docker_container_tools.copy_container(target_container_id)
     docker_container_tools.stop_container(target_container_id)
-    docker_container_tools.remove_container(target_container_id)
+    if not target_autoremovable:
+        docker_container_tools.remove_container(target_container_id)
     docker_container_tools.rename_container(new_container_id, target_container_name)
     docker_container_tools.start_container(new_container_id)
