@@ -6,7 +6,7 @@ FROM docker/compose:1.29.2
 RUN apk add --no-cache python3 py3-pip
 RUN pip3 install docker
 
-COPY --from=busybox /bin/busybox /busybox
+COPY --from=busybox /bin/busybox /bbx/busybox
 COPY ./python /python
 COPY ./entrypoint.sh /entrypoint.sh
 
