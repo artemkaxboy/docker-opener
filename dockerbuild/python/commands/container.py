@@ -1,4 +1,3 @@
-from docker.errors import APIError
 from errors import ArgumentError, ObjectNotFoundError
 from tools import docker_container_tools, docker_common_tools, docker_tools, docker_image_tools, system_tools
 
