@@ -273,3 +273,12 @@ def is_container_running(container: Container):
     :return: true if running, false - otherwise
     """
     return container.attrs.get("State", {}).get("Running", False)
+
+
+def is_container_autoremovable(container: Container):
+    """
+    Checks if container autoremovable (has option `--rm`) or not.
+    :param container: container to check
+    :return: true if autoremovable, false - otherwise
+    """
+    return container.attrs.get("HostConfig", {}).get("AutoRemove", False)
