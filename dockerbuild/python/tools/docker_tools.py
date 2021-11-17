@@ -3,13 +3,13 @@ import os
 from docker import client, DockerClient
 from docker.models.containers import Container, ExecResult
 
-busybox_interpreter = """/tmp/busybox sh -c '
-export PATH="/tmp/busybin:$PATH"
+busybox_interpreter = """/bbx/busybox sh -c '
+export PATH="/bbx/busybin:$PATH"
 echo "Installing busybox..."
 export HISTFILE=/dev/null
-/tmp/busybox mkdir /tmp/busybin -p
-/tmp/busybox --install /tmp/busybin
-trap "echo Removing busybox...\nrm -rf /tmp/busybox /tmp/busybin" INT TERM EXIT
+/bbx/busybox mkdir /bbx/busybin -p
+/bbx/busybox --install /bbx/busybin
+trap "echo Removing busybox...\nrm -rf /bbx/busybox /bbx/busybin" INT TERM EXIT
 sh'"""
 
 
@@ -45,4 +45,4 @@ def copy_busybox(target_id: str):
     :return: None
     """
     print("Copying busybox...")
-    os.system("docker cp /busybox %s:/tmp/busybox" % target_id)
+    os.system("docker cp /bbx %s:/bbx" % target_id)
