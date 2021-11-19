@@ -36,6 +36,7 @@ stop_commands = ["sto", "stop"]
 start_commands = ["sta", "start"]
 restart_commands = ["res", "restart"]
 
+port_commands = ["port"]
 recreate_commands = ["recreate"]
 upgrade_commands = ["upgrade"]
 
@@ -101,6 +102,8 @@ try:
     elif command in restart_commands:
         container.restart(args[1:])
 
+    elif command in port_commands:
+        container.open_port(args[1:])
     elif command in recreate_commands:
         container.recreate(args[1:])
     elif command in upgrade_commands:

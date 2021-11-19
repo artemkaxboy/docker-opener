@@ -61,6 +61,26 @@ def copy_container(container_id: str, new_container_name: str = None) -> str:
     return new_container_id
 
 
+def prepare_port_opener(target_id: str, port_mapping: str) -> str:
+    container = get_container(target_id)
+    print("Preparing port opener for `%s`" % container.name)
+
+    network = container.attrs.get('NetworkSettings', {})
+    # network. todo open port
+
+    new_container_id = get_docker().api.create_container(image="umputun/reproxy:v0.10.0",
+                                                         command=["--static.enabled",
+                                                                  "--static.rule=*,(.*),http://monitoring-web/$1",
+                                                                  "--dbg"],
+                                                         ports=["8080/tcp"],
+                                                         host_config=container.attrs.get('HostConfig', None),
+                                                         labels=container.attrs['Config'].get('Labels', None),
+                                                         networking_config=container.attrs.get('NetworkSettings', None),
+                                                         )
+    start_container(new_container_id)
+    return new_container_id
+
+
 def get_container_name(container_id: str):
     """
     Finds container name.
