@@ -1,6 +1,9 @@
 import re
 
+import docker.utils
 from docker.models.containers import Container
+from docker.types import HostConfig, NetworkingConfig
+from docker.utils import ports
 
 from errors import ObjectNotFoundError
 from tools import docker_image_tools, docker_common_tools, system_tools
@@ -61,24 +64,33 @@ def copy_container(container_id: str, new_container_name: str = None) -> str:
     return new_container_id
 
 
-def prepare_port_opener(target_id: str, port_mapping: str) -> str:
-    container = get_container(target_id)
-    print("Preparing port opener for `%s`" % container.name)
+def open_port(target_id: str, host_port: int, target_port: int):
+    target_container = get_container(target_id)
+    print("Preparing port opener for `%s`" % target_container.name)
 
-    network = container.attrs.get('NetworkSettings', {})
-    # network. todo open port
+    get_docker().api.pull("alpine/socat:1.0.5")
 
-    new_container_id = get_docker().api.create_container(image="umputun/reproxy:v0.10.0",
-                                                         command=["--static.enabled",
-                                                                  "--static.rule=*,(.*),http://monitoring-web/$1",
-                                                                  "--dbg"],
-                                                         ports=["8080/tcp"],
-                                                         host_config=container.attrs.get('HostConfig', None),
-                                                         labels=container.attrs['Config'].get('Labels', None),
-                                                         networking_config=container.attrs.get('NetworkSettings', None),
+    host_config = target_container.attrs.get('HostConfig', {}).copy()
+    host_config['PortBindings'] = {"%s/tcp" % host_port:
+                                       [{'HostIp': '0.0.0.0', 'HostPort': "%s" % host_port}]}
+    host_config['AutoRemove'] = True
+    host_config['RestartPolicy'] = None
+
+    new_container_id = get_docker().api.create_container(image="alpine/socat:1.0.5",
+                                                         command=["TCP-LISTEN:%s,fork" % host_port,
+                                                                  "TCP:%s:%s" % (target_container.name, target_port)],
+                                                         ports=[host_port],
+                                                         host_config=host_config,
+                                                         labels=target_container.attrs['Config'].get('Labels', None),
+                                                         detach=False,
                                                          )
+    port_opener_container = get_container(new_container_id)
     start_container(new_container_id)
-    return new_container_id
+    try:
+        print("Port %s opened. Press [Ctrl+C] to stop the app. Port will be closed automatically.")
+        ignore = port_opener_container.wait()['StatusCode']
+    except KeyboardInterrupt:
+        stop_container(new_container_id)
 
 
 def get_container_name(container_id: str):

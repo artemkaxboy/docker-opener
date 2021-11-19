@@ -309,17 +309,5 @@ def open_port(args):
 
     target_container = docker_container_tools.find_container(args[0])
     target_container_id = target_container.id
-    target_container_name = target_container.name
 
-    docker_common_tools.docker_ps(container_ids=[target_container_id])
-
-    print("Connecting to `%s` ..." % target_container_name)
-
-    new_container_id = docker_container_tools.prepare_port_opener(target_container_id, "")
-
-
-    # docker_container_tools.stop_container(target_container_id)
-    # if not target_autoremovable:
-    #     docker_container_tools.remove_container(target_container_id)
-    # docker_container_tools.rename_container(new_container_id, target_container_name)
-    # docker_container_tools.start_container(new_container_id)
+    docker_container_tools.open_port(target_container_id, args[1], args[2])

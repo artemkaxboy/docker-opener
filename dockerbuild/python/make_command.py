@@ -112,8 +112,8 @@ try:
         container.shell(args)
 
 except OpenerBaseException as e:
-    system_tools.die("Error: " + str(e))
+    system_tools.die("Opener error: " + str(e))
 except (ValueError, OSError) as e:
-    system_tools.die("Error: " + str(e))
+    system_tools.die("Opener error: " + str(e))
 except KeyboardInterrupt:
     pass
