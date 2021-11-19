@@ -1,8 +1,8 @@
 from docker.models.containers import Container
 
-from tools.docker_common_tools import get_docker, compose_project_label, container_label_key, compose_project_dir_label, \
-    stack_namespace_label
-from tools.docker_container_tools import is_container_running, get_container_name
+from tools.docker_common_tools import get_docker, compose_project_label, container_label_key, \
+    compose_project_dir_label, stack_namespace_label
+from tools.docker_container_tools import is_container_running
 
 compose_service_label = "com.docker.compose.service"
 
