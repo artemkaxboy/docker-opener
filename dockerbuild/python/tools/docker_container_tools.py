@@ -40,7 +40,7 @@ def copy_container(container_id: str, new_container_name: str = None) -> str:
     container = get_container(container_id)
     print("Copying container `%s` to " % container.name, end='')
     new_container_id = get_docker().api.create_container(image=docker_image_tools.get_image_name(container),
-                                                         command=container.attrs.get('Args', None),
+                                                         command=container.attrs['Config'].get('Cmd', None),
                                                          hostname=container.attrs['Config'].get('Hostname', None),
                                                          user=container.attrs['Config'].get('User', None),
                                                          ports=container.attrs['Config'].get('ExposedPorts', None),
