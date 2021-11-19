@@ -1,9 +1,6 @@
 import re
 
-import docker.utils
 from docker.models.containers import Container
-from docker.types import HostConfig, NetworkingConfig
-from docker.utils import ports
 
 from errors import ObjectNotFoundError
 from tools import docker_image_tools, docker_common_tools, system_tools
