@@ -72,15 +72,18 @@ def clist_stack():
     Prints all available stacks with running/all containers count.
     :return: None
     """
-    print("\nAll available stacks (running containers/all containers):")
-    for stack_stat in get_stack_containers_list().items():
-        stack_container: StackContainer
+    stack_containers_list = get_stack_containers_list().items()
 
-        running_containers_count = sum(1 for stack_container in stack_stat[1] if stack_container.running)
-        all_containers_count = len(stack_stat[1])
-        stack_name = stack_stat[0]
+    if len(stack_containers_list) > 0:
+        print("\nAll available stacks (running containers/all containers):")
+        for stack_stat in stack_containers_list:
+            stack_container: StackContainer
 
-        print("\n  - %s: %d/%d" % (stack_name, running_containers_count, all_containers_count))
+            running_containers_count = sum(1 for stack_container in stack_stat[1] if stack_container.running)
+            all_containers_count = len(stack_stat[1])
+            stack_name = stack_stat[0]
+
+            print("\n  - %s: %d/%d" % (stack_name, running_containers_count, all_containers_count))
 
 
 def logs(args):
