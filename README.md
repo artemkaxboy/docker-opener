@@ -77,6 +77,7 @@ latest: Pulling from artemkaxboy/opener
 | `kill` | `docker kill nginx` | `opener k ng` | Kill one or more running containers |
 | `logs` | `docker logs nginx -f` | `opener l ng -f` | Fetch the logs of a container |
 | `pause` | `docker pause nginx` | `opener p ng` | Pause all processes within one or more containers |
+| `port`| | `opener port portainer 443 9443` | Temporary forward host port 443 to portainer container to port 9443 |
 | `recreate` | | `opener recreate ng` | Kill and Remove running container and Create and Run the same container |
 | `restart` | `docker restart nginx` | `opener res ng` | Restart one or more containers |
 | `rm` | `docker rm nginx` | `opener rm ng` | Remove one or more containers |

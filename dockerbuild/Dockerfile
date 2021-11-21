@@ -3,7 +3,7 @@ FROM busybox:1.33.1 as busybox
 
 FROM docker/compose:1.29.2
 
-RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache python3 py3-pip socat
 RUN pip3 install docker
 
 COPY --from=busybox /bin/busybox /bbx/busybox
