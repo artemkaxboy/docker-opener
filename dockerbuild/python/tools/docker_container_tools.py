@@ -85,7 +85,7 @@ def open_port(target_id: str, host_port: int, target_port: int):
     if opener_container_id is None:
         opener_image = "artemkaxboy/opener:snapshot"
     else:
-        opener_image = get_image_name(opener_container_id)
+        opener_image = get_image_name(get_container(opener_container_id))
 
     docker_version = get_docker_version()
     port_bindings = utils.convert_port_bindings({host_port: host_port})
