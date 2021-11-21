@@ -1,10 +1,16 @@
 import re
+import socket
 
 from docker.models.containers import Container
+from docker.types import HostConfig
+from docker.utils import utils
 
 from errors import ObjectNotFoundError
 from tools import docker_image_tools, docker_common_tools, system_tools
-from tools.docker_common_tools import get_docker
+from tools.docker_common_tools import get_docker, get_docker_version
+from tools.docker_image_tools import get_image_name
+
+port_forward_entrypoint = "socat"
 
 
 def get_container(container_id: str) -> Container:
@@ -59,6 +65,52 @@ def copy_container(container_id: str, new_container_name: str = None) -> str:
                                                          )
     print("`%s`" % get_container_name(new_container_id))
     return new_container_id
+
+
+def open_port(target_id: str, host_port: int, target_port: int):
+    """
+    TODO fix
+    Creates new container with bound host_port, connects new container to all networks which target container
+    connected. New container forwards all traffic between opened host_port and target_port onto target_container
+    bidirectionally.
+    Port forwarding works until Ctrl+C pressed.
+    :param target_id: target container identifier
+    :param host_port: host port to bind
+    :param target_port: target container port to open
+    """
+    target_container = get_container(target_id)
+    print("Preparing port opener for `%s`" % target_container.name)
+
+    opener_container_id = get_current_container_id()
+    if opener_container_id is None:
+        opener_image = "artemkaxboy/opener:snapshot"
+    else:
+        opener_image = get_image_name(opener_container_id)
+
+    docker_version = get_docker_version()
+    port_bindings = utils.convert_port_bindings({host_port: host_port})
+    host_config = HostConfig(docker_version, port_bindings=port_bindings, auto_remove=True)
+
+    new_container_id = get_docker().api.create_container(image=opener_image,
+                                                         entrypoint=port_forward_entrypoint,
+                                                         command=["TCP-LISTEN:%s,fork" % host_port,
+                                                                  "TCP:%s:%s" % (
+                                                                    get_container_ip(target_container), target_port)],
+                                                         ports=[host_port],
+                                                         host_config=host_config,
+                                                         )
+    port_opener_container = get_container(new_container_id)
+
+    for network_name, network in target_container.attrs.get("NetworkSettings", {}).get("Networks", {}).items():
+        get_docker().networks.get(network['NetworkID']).connect(new_container_id)
+
+    start_container(new_container_id)
+    try:
+        print("Port opened: %s -> %s:%s" % (host_port, target_container.name, target_port))
+        print("Press [Ctrl+C] to stop the app. Port will be closed automatically.")
+        port_opener_container.wait()
+    except KeyboardInterrupt:
+        stop_container(new_container_id)
 
 
 def get_container_name(container_id: str):
@@ -277,3 +329,24 @@ def is_container_autoremovable(container: Container):
     :return: true if autoremovable, false - otherwise
     """
     return container.attrs.get("HostConfig", {}).get("AutoRemove", False)
+
+
+def get_current_container_id():
+    """
+    :return: current container id or None if id cannot be found
+    """
+    try:
+        return find_container(socket.gethostname()).id
+    except ObjectNotFoundError:
+        return None
+
+
+def get_container_ip(container: Container):
+    """
+    TODO fix
+    :param container:
+    :return:
+    """
+    for network_name, network in container.attrs.get("NetworkSettings", {}).get("Networks", {}).items():
+        return network.get("IPAddress", None)
+    return None

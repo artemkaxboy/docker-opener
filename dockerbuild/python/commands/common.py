@@ -22,6 +22,7 @@ Container commands:
   k,  kill           Kill containers
   l,  logs           Fetch container logs
   p,  pause          Pause all processes within one or more containers
+      port           Temporary forward host port to container
       recreate       Recreate container
   res,restart        Restart one or more containers
       rm             Remove one or more containers

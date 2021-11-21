@@ -44,8 +44,19 @@ def docker_ps(container_ids: List[str] = None, compose_name: str = None, search_
 
 
 def is_docker_available():
+    """
+    Checks if docker API available.
+    :return: true if docker API available, false - otherwise
+    """
     try:
         docker.client.from_env()
         return True
     except DockerException:
         return False
+
+
+def get_docker_version() -> str:
+    """
+    :return: docker API version
+    """
+    return get_docker().api.api_version
