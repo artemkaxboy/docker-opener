@@ -14,4 +14,7 @@ class Args:
         return len(self.args) == 0
 
     def get_command(self):
+        if self.is_empty():
+            raise ValueError("No command or target passed")
+
         return self.args[0]

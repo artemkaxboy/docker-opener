@@ -1,7 +1,7 @@
 from docker.errors import APIError
 
 from dockerbuild.docker_opener.command import Command
-from dockerbuild.docker_opener.docker_engine.docker_engine import DockerEngine
+from dockerbuild.docker_opener.containers.docker_container import DockerContainer
 from dockerbuild.docker_opener.image.image import DockerImage
 from dockerbuild.docker_opener.system.args import Args
 
@@ -47,10 +47,6 @@ To get more help with opener, check out our docs at https://github.com/artemkaxb
 class SystemCommand(Command):
     commands = {"help": ["help", "h"], "update": ["update", "u"]}
 
-    def __init__(self, args: Args):
-        self.command = SystemCommand.get_command_key(args.get_command())
-        self.args = args
-
     @classmethod
     def get_command_key(cls, command_variable):
         for k, v in cls.commands.items():
@@ -66,8 +62,11 @@ class SystemCommand(Command):
 
         return False
 
-    def perform(self):
+    def __init__(self, args: Args):
+        self.command = SystemCommand.get_command_key(args.get_command())
+        self.args = args
 
+    def perform(self):
         if self.command == "help":
             self.print_help_message()
         elif self.command == "update":
@@ -83,16 +82,12 @@ class SystemCommand(Command):
     @staticmethod
     def update():
         """
-        Updates current image tags.
-        :return: None
+        Updates current image tag.
         :raises ValueError cannot find current container image name
         """
 
-        current_image = DockerImage(DockerEngine.get_current_container_image())
+        current_container_image_name = DockerContainer.get_current_container().get_image_name()
 
-        try:
-            print("\nPulling %s..." % current_image.get_name())
-            current_image.pull()
-            print("OK")
-        except APIError as e:
-            print("error: %s" % e)
+        print("\nPulling %s..." % current_container_image_name)
+        DockerImage.pull_by_name(current_container_image_name)
+        print("OK")

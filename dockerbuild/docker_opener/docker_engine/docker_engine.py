@@ -1,12 +1,6 @@
-import socket
-
 import docker as docker
 from docker import DockerClient
-from docker.errors import DockerException, APIError
-from docker.models.containers import Container
-from docker.models.images import Image
-
-from errors import ObjectNotFoundError
+from docker.errors import DockerException
 
 
 class DockerEngine:
@@ -28,11 +22,15 @@ class DockerEngine:
         return cls.docker_client
 
     @classmethod
-    def get_current_container_image(cls) -> Image:
-        hostname = socket.gethostname()
-        try:
-            print(hostname)
-            container: Container = cls.get_docker().containers.get(hostname)
-            return container.image
-        except APIError:
-            raise ObjectNotFoundError("Current container image not found. Is the app run in docker?")
+    def get_container_by_id(cls, container_id):
+        return cls.get_docker().containers.get(container_id)
+
+    # @classmethod
+    # def get_current_container_image(cls) -> Image:
+    #     hostname = socket.gethostname()
+    #     try:
+    #         container: Container = cls.get_docker().containers.get(hostname)
+    #         docker_container = DockerContainer(container)
+    #         return docker_container.get_image_name()
+    #     except APIError:
+    #         raise ObjectNotFoundError("Current container image not found. Is the app run in docker?")

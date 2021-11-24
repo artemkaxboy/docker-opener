@@ -91,7 +91,11 @@ if __name__ == '__main__':
 
     except OpenerBaseException as e:
         utils.die("Opener error: " + str(e))
-    except (ValueError, OSError) as e:
+    except ValueError as e:
+        print("Opener error: %s" % str(e))
+        SystemCommand.print_help_message()
+        utils.die()
+    except OSError as e:
         utils.die("Opener error: " + str(e))
     except KeyboardInterrupt:
         pass

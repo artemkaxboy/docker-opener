@@ -7,7 +7,8 @@ non_interactive_mode = "noninteractive"
 
 
 def die(*args):
-    print('\n'.join(args))
+    if len(args) > 0:
+        print('\n'.join(args))
     sys.exit(1)
 
 
