@@ -1,15 +1,28 @@
 import sys
 
+from dockerbuild.docker_opener.command import Command
 from dockerbuild.docker_opener.docker_engine.docker_engine import DockerEngine
 from dockerbuild.docker_opener.errors import OpenerBaseException
 from dockerbuild.docker_opener.system import utils
+from dockerbuild.docker_opener.system.args import Args
+from dockerbuild.docker_opener.system.command import SystemCommand
 
 if __name__ == '__main__':
     try:
         if not DockerEngine.is_client_available():
             raise OSError("Docker client is not available")
 
-        args = sys.argv[1:]
+        args = Args(sys.argv[1:])
+
+        command: Command
+        if SystemCommand.contains(args.get_command()):
+            command = SystemCommand(args)
+        else:
+            raise ValueError("Unknown command")
+
+        command.perform()
+        # if args.is_empty():
+        #     common.help()
         # if len(args) == 0:
         #     common.help()
         #     raise ValueError("Command or target required.")
