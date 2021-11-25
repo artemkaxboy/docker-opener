@@ -10,7 +10,8 @@ from dockerbuild.docker_opener.system.command import SystemCommand
 if __name__ == '__main__':
     try:
         if not DockerEngine.is_client_available():
-            raise OSError("Docker client is not available")
+            raise OSError(
+                "Docker client is not available. Make sure `/var/run/docker.sock` is mounted to the container.")
 
         args = Args(sys.argv[1:])
 
