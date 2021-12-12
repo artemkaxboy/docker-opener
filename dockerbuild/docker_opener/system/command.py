@@ -1,3 +1,5 @@
+import os
+
 from docker.errors import APIError
 
 from dockerbuild.docker_opener.command import Command
@@ -45,7 +47,11 @@ To get more help with opener, check out our docs at https://github.com/artemkaxb
 
 
 class SystemCommand(Command):
-    commands = {"help": ["help", "h"], "update": ["update", "u"]}
+    commands = {
+        "help": ["help", "h"],
+        "update": ["update", "u"],
+        "version": ["version", "v"],
+    }
 
     @classmethod
     def get_command_key(cls, command_variable):
@@ -71,6 +77,8 @@ class SystemCommand(Command):
             self.print_help_message()
         elif self.command == "update":
             self.update()
+        elif self.command == "version":
+            self.version()
 
     @staticmethod
     def print_help_message():
@@ -91,3 +99,13 @@ class SystemCommand(Command):
         print("\nPulling %s..." % current_container_image_name)
         DockerImage.pull_by_name(current_container_image_name)
         print("OK")
+
+    @staticmethod
+    def version():
+        """
+        Prints current image version.
+        :return: None
+        """
+        print("Version: %s" % os.environ.get("VERSION"))
+        print("Revision: %s" % os.environ.get("REVISION"))
+        print("Created: %s" % os.environ.get("CREATED"))
