@@ -7,8 +7,8 @@ update_commands = ['u']
 
 
 @pytest.mark.parametrize('command', update_commands)
-def test_update_with_no_image(no_args_image_for_function, command):
-    status, container = wait_for_container(no_args_image_for_function, command)
+def test_update_with_no_image(no_args_image, command):
+    status, container = wait_for_container(no_args_image, command)
 
     assert status['StatusCode'] == 0, "Container exited with non-zero status"
 
