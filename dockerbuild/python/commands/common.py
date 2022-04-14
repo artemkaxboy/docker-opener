@@ -47,8 +47,8 @@ To get more help with opener, check out our docs at https://github.com/artemkaxb
 
 # todo - kill confirmation should be positive by default if only one container found
 
-# noinspection PyShadowingBuiltins
-def help():
+# noinspection PyShadowingBuiltins,PyUnusedLocal
+def help(*args):
     """
     Prints help message.
     :return: None
@@ -56,7 +56,8 @@ def help():
     print(help_msg)
 
 
-def update():
+# noinspection PyUnusedLocal
+def update(*args):
     """
     Updates current image tags.
     :return: None
@@ -78,7 +79,8 @@ def update():
             print("error: %s" % e)
 
 
-def version():
+# noinspection PyUnusedLocal
+def version(*args):
     """
     Prints current image version.
     :return: None
