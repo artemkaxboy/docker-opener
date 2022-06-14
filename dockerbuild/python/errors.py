@@ -17,3 +17,10 @@ class ObjectNotFoundError(OpenerBaseException):
 
     def __init__(self, *args, **kwargs):
         pass
+
+
+class MoreThanOneObjectFoundError(OpenerBaseException):
+    """ More than one object found error. """
+
+    def __init__(self, *args, **kwargs):
+        pass

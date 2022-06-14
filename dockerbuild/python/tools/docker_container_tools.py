@@ -5,7 +5,7 @@ from docker.models.containers import Container
 from docker.types import HostConfig
 from docker.utils import utils
 
-from errors import ObjectNotFoundError
+from errors import ObjectNotFoundError, MoreThanOneObjectFoundError
 from tools import docker_image_tools, docker_common_tools, system_tools
 from tools.docker_common_tools import get_docker, get_docker_version
 from tools.docker_image_tools import get_image_name
@@ -139,7 +139,7 @@ def find_container(target):
 
     if len(options) != 1:
         docker_common_tools.docker_ps(list(map(lambda c: c.id, options)))
-        raise ObjectNotFoundError("More than one container `%s` found!" % target)
+        raise MoreThanOneObjectFoundError("More than one container `%s` found!" % target)
 
     return options[0]
 
@@ -155,11 +155,12 @@ def find_container_id(target):
     return find_container(target).id
 
 
-def find_containers(target, raise_if_not_found=False, search_all=False):
+def find_containers(target, search_all=False, raise_if_not_found=False, raise_if_more_than_one_found=False):
     """
     Returns container by name, image, id, port.
     :param search_all: include stopped containers
     :param raise_if_not_found: raise error if no containers found
+    :param raise_if_more_than_one_found: raise error if more than one container found
     :param target: known attribute of wanted container
     :return: Found container
     :raises ValueError if container not found
@@ -179,6 +180,8 @@ def find_containers(target, raise_if_not_found=False, search_all=False):
                   (container.name, target))
             found_containers.append(container)
     if len(found_containers) > 0:
+        if raise_if_more_than_one_found and len(found_containers) > 1:
+            raise ValueError("More than one container found!")
         return found_containers
 
     for container in containers:
@@ -187,6 +190,8 @@ def find_containers(target, raise_if_not_found=False, search_all=False):
             print("Found container with image `%s` containing `%s`" % (image_name, target))
             found_containers.append(container)
     if len(found_containers) > 0:
+        if raise_if_more_than_one_found and len(found_containers) > 1:
+            raise ValueError("More than one container found!")
         return found_containers
 
     for container in containers:
@@ -194,6 +199,8 @@ def find_containers(target, raise_if_not_found=False, search_all=False):
             print("Found container with ID `%s` containing `%s`" % (container.id, target))
             found_containers.append(container)
     if len(found_containers) > 0:
+        if raise_if_more_than_one_found and len(found_containers) > 1:
+            raise ValueError("More than one container found!")
         return found_containers
 
     for container in containers:
@@ -201,10 +208,13 @@ def find_containers(target, raise_if_not_found=False, search_all=False):
             print("Found container with exposed/mapped port `%s`" % target)
             found_containers.append(container)
     if len(found_containers) > 0:
+        if raise_if_more_than_one_found and len(found_containers) > 1:
+            raise ValueError("More than one container found!")
         return found_containers
 
     if raise_if_not_found:
         raise ValueError("No containers found for `%s`!" % target)
+    # Always empty list
     return found_containers
 
 

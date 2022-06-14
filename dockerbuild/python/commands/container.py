@@ -274,7 +274,14 @@ def recreate(args, need_upgrade: bool = False):
     if len(args) != 1:
         raise ValueError("Command has no options")
 
-    target_container = docker_container_tools.find_container(args[0])
+    try:
+        target_container = docker_container_tools.find_container(args[0])
+    except ObjectNotFoundError:
+        target_container = docker_container_tools.find_containers(args[0],
+                                                                  raise_if_more_than_one_found=True,
+                                                                  raise_if_not_found=True,
+                                                                  search_all=True)[0]
+
     target_container_id = target_container.id
     target_container_name = target_container.name
     target_autoremovable = docker_container_tools.is_container_autoremovable(target_container)
