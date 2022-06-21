@@ -95,7 +95,7 @@ def open_port(target_id: str, host_port: int, target_port: int):
                                                          entrypoint=port_forward_entrypoint,
                                                          command=["TCP-LISTEN:%s,fork" % host_port,
                                                                   "TCP:%s:%s" % (
-                                                                    get_container_ip(target_container), target_port)],
+                                                                      get_container_ip(target_container), target_port)],
                                                          ports=[host_port],
                                                          host_config=host_config,
                                                          )
@@ -219,7 +219,8 @@ def find_containers(target, search_all=False, raise_if_not_found=False, raise_if
 
 
 def find_container_ids(target: str, raise_if_not_found: bool = False, search_all: bool = False):
-    return list(map(lambda c: c.id, find_containers(target, raise_if_not_found, search_all=search_all)))
+    return list(
+        map(lambda c: c.id, find_containers(target, raise_if_not_found=raise_if_not_found, search_all=search_all)))
 
 
 def get_ports(container: Container):
