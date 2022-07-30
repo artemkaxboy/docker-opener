@@ -34,6 +34,16 @@ Or permanently (re-login required):
 echo "alias opener='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener'" >> ~/.bash_aliases
 ```
 
+Powershell installation. Add to profile:
+
+```powershell
+function __opener_alias { 
+    docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock artemkaxboy/opener $args
+}
+
+New-Alias -Name opener -Value __opener_alias
+```
+
 ### Alias usage
 
 After adding alias you can use short form:
