@@ -80,7 +80,7 @@ latest: Pulling from artemkaxboy/opener
 
 | Command | Regular docker example | Opener short example | Result |
 | --- | --- | --- | --- |
-| `--` | `docker exec -it nginx bash` | `docker -- ng` | Run new shell process in the container and connect |
+| `--` | `docker exec -it nginx bash` | `opener -- ng` | Run new shell process in the container and connect |
 | `attach` | `docker attach nginx` | `opener a ng` | Attach local standard input, output, and error streams to a running container |
 | `exec` | `docker exec nginx date` | `opener e ng date` | Run a command in a running container |
 | `inspect` | `docker inspect nginx` | `opener i ng` | Return low-level information on Docker objects |
