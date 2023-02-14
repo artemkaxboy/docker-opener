@@ -16,7 +16,7 @@ compose_top_command = compose_project + fake_compose_path + " top %s"
 def prepare_command(args, command, search_all=False):
     """
     Prepares compose command to run.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :param command: command to prepare
     :param search_all: include stopped containers
     :return: None
@@ -35,7 +35,8 @@ def prepare_command(args, command, search_all=False):
     system_tools.prepare_command(command % (target_name, arg_string))
 
 
-def clist():
+# noinspection PyUnusedLocal
+def clist(*args):
     """
     Prints all available compose projects and stacks with running/all containers count and compose directories.
     :return: None
@@ -89,7 +90,7 @@ def clist_stack():
 def logs(args):
     """
     Prepare compose logs command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -102,7 +103,7 @@ def logs(args):
 def kill(args):
     """
     Prepare compose kill command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -115,7 +116,7 @@ def kill(args):
 def down(args):
     """
     Prepare compose down command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -128,7 +129,7 @@ def down(args):
 def start(args):
     """
     Prepare compose start command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -141,7 +142,7 @@ def start(args):
 def stop(args):
     """
     Prepare compose stop command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -154,7 +155,7 @@ def stop(args):
 def top(args):
     """
     Prepare compose top command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
@@ -167,7 +168,7 @@ def top(args):
 def ps(args):
     """
     Prepare compose ps command.
-    :param args: array of command args, must have attribute to find compose at first place
+    :param args: array of command args, must have an attribute to find compose at first place
     :return: None
     :raises ValueError if no target found
     """
